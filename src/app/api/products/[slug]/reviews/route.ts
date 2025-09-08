@@ -195,10 +195,10 @@ export async function POST(
     // Check if product exists
     const product = await db.product.findUnique({
       where: { slug: params.slug },
-      select: { id: true, title: true, status: true }
+      select: { id: true, name: true, isActive: true }
     })
 
-    if (!product || product.status !== 'PUBLISHED') {
+    if (!product || !product.isActive) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 })
     }
 
@@ -207,7 +207,7 @@ export async function POST(
       where: {
         productId: product.id,
         OR: [
-          { userId: (session.user as any).id },
+          { user: { email: session.user.email } },
           { customer: { email: session.user.email } }
         ]
       }
@@ -225,7 +225,7 @@ export async function POST(
           id: orderId,
           status: 'DELIVERED',
           OR: [
-            { userId: (session.user as any).id },
+            { user: { email: session.user.email } },
             { customer: { email: session.user.email } }
           ],
           items: {
@@ -238,14 +238,19 @@ export async function POST(
       isVerified = !!order
     }
 
+    // Get user from database first
+    const user = await db.user.findUnique({
+      where: { email: session.user.email }
+    })
+
     // Create review
     let review
-    if ((session.user as any).id) {
+    if (user) {
       // For authenticated users
       review = await db.review.create({
         data: {
           productId: product.id,
-          userId: (session.user as any).id,
+          userId: user.id,
           orderId: orderId || null,
           rating,
           title: title || null,

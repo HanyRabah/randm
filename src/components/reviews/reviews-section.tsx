@@ -7,10 +7,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { MessageSquare, Edit3 } from 'lucide-react'
 
 interface ReviewsSectionProps {
-  productId: string
+  productSlug: string
 }
 
-export function ReviewsSection({ productId }: ReviewsSectionProps) {
+export function ReviewsSection({ productSlug }: ReviewsSectionProps) {
   const [refreshTrigger, setRefreshTrigger] = useState(0)
 
   const handleReviewSubmitted = () => {
@@ -34,14 +34,14 @@ export function ReviewsSection({ productId }: ReviewsSectionProps) {
         
         <TabsContent value="reviews" className="mt-6">
           <ReviewList 
-            productId={productId} 
+            productSlug={productSlug} 
             refreshTrigger={refreshTrigger}
           />
         </TabsContent>
         
         <TabsContent value="write-review" className="mt-6">
           <ReviewForm 
-            productSlug={productId}
+            productSlug={productSlug}
             onReviewSubmitted={handleReviewSubmitted}
           />
         </TabsContent>

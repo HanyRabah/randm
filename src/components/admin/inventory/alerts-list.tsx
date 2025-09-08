@@ -43,8 +43,8 @@ export function AlertsList() {
   const [editingAlert, setEditingAlert] = useState<InventoryAlert | null>(null)
   const [filters, setFilters] = useState({
     search: '',
-    isActive: '',
-    alertType: '',
+    isActive: 'all',
+    alertType: 'all',
     page: 1
   })
 
@@ -56,8 +56,8 @@ export function AlertsList() {
       })
       
       if (filters.search) params.append('search', filters.search)
-      if (filters.isActive) params.append('isActive', filters.isActive)
-      if (filters.alertType) params.append('alertType', filters.alertType)
+      if (filters.isActive && filters.isActive !== 'all') params.append('isActive', filters.isActive)
+      if (filters.alertType && filters.alertType !== 'all') params.append('alertType', filters.alertType)
 
       const response = await fetch(`/api/admin/inventory/alerts?${params}`)
       if (response.ok) {
@@ -239,7 +239,7 @@ export function AlertsList() {
                 <SelectValue placeholder="All statuses" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All statuses</SelectItem>
+                <SelectItem value="all">All statuses</SelectItem>
                 <SelectItem value="true">Active</SelectItem>
                 <SelectItem value="false">Inactive</SelectItem>
               </SelectContent>
@@ -253,7 +253,7 @@ export function AlertsList() {
                 <SelectValue placeholder="All types" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All types</SelectItem>
+                <SelectItem value="all">All types</SelectItem>
                 <SelectItem value="LOW_STOCK">Low Stock</SelectItem>
                 <SelectItem value="OUT_OF_STOCK">Out of Stock</SelectItem>
               </SelectContent>
@@ -261,7 +261,7 @@ export function AlertsList() {
 
             <Button
               variant="outline"
-              onClick={() => setFilters({ search: '', isActive: '', alertType: '', page: 1 })}
+              onClick={() => setFilters({ search: '', isActive: 'all', alertType: 'all', page: 1 })}
             >
               Clear Filters
             </Button>

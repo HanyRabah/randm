@@ -273,20 +273,22 @@ model Customer {
 }
 
 model Address {
-  id         String @id @default(cuid())
-  customerId String?
-  userId     String?
-  firstName  String
-  lastName   String
-  company    String?
-  line1      String
-  line2      String?
-  city       String
-  state      String
-  postalCode String
-  country    String @default("EG")
-  phone      String?
-  isDefault  Boolean @default(false)
+  id              String @id @default(cuid())
+  customerId      String?
+  userId          String?
+  firstName       String
+  lastName        String
+  company         String?
+  line1           String
+  line2           String?
+  city            String
+  state           String
+  buildingNumber  String?
+  floorNumber     String?
+  apartmentNumber String?
+  country         String @default("EG")
+  phone           String?
+  isDefault       Boolean @default(false)
 
   customer Customer? @relation(fields: [customerId], references: [id], onDelete: Cascade)
   user     User?     @relation(fields: [userId], references: [id], onDelete: Cascade)

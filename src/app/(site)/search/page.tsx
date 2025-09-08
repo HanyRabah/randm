@@ -343,7 +343,7 @@ export default function SearchPage() {
               )}
 
               {/* Category Filter */}
-              {searchResults?.filters.categories && (
+              {searchResults?.filters?.categories && (
                 <Card>
                   <CardContent className="p-4">
                     <h3 className="font-medium mb-3">Category</h3>
@@ -394,7 +394,7 @@ export default function SearchPage() {
               </Card>
 
               {/* Color Filter */}
-              {searchResults?.filters.colors && searchResults.filters.colors.length > 0 && (
+              {searchResults?.filters?.colors && searchResults.filters.colors.length > 0 && (
                 <Card>
                   <CardContent className="p-4">
                     <h3 className="font-medium mb-3">Colors</h3>
@@ -417,7 +417,7 @@ export default function SearchPage() {
               )}
 
               {/* Material Filter */}
-              {searchResults?.filters.materials && searchResults.filters.materials.length > 0 && (
+              {searchResults?.filters?.materials && searchResults.filters.materials.length > 0 && (
                 <Card>
                   <CardContent className="p-4">
                     <h3 className="font-medium mb-3">Materials</h3>
@@ -440,7 +440,7 @@ export default function SearchPage() {
               )}
 
               {/* Size Filter */}
-              {searchResults?.filters.sizes && searchResults.filters.sizes.length > 0 && (
+              {searchResults?.filters?.sizes && searchResults.filters.sizes.length > 0 && (
                 <Card>
                   <CardContent className="p-4">
                     <h3 className="font-medium mb-3">Sizes</h3>
@@ -487,7 +487,7 @@ export default function SearchPage() {
                   <div className="h-6 bg-gray-200 rounded w-48 animate-pulse"></div>
                 ) : (
                   <p className="text-gray-600">
-                    {searchResults?.pagination.totalCount || 0} products found
+                    {searchResults?.pagination?.totalCount || 0} products found
                     {searchQuery && ` for "${searchQuery}"`}
                   </p>
                 )}
@@ -541,13 +541,13 @@ export default function SearchPage() {
             {/* Results Grid */}
             {!loading && searchResults && (
               <>
-                {searchResults.products.length > 0 ? (
+                {searchResults.products?.length > 0 ? (
                   <div className={
                     viewMode === 'grid' 
                       ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'
                       : 'space-y-4'
                   }>
-                    {searchResults.products.map(product => (
+                    {searchResults.products?.map(product => (
                       <ProductCard
                         key={product.id}
                         product={product}
@@ -569,7 +569,7 @@ export default function SearchPage() {
                 )}
 
                 {/* Pagination */}
-                {searchResults.pagination.totalPages > 1 && (
+                {searchResults.pagination?.totalPages > 1 && (
                   <div className="flex items-center justify-center space-x-2 mt-8">
                     <Button
                       variant="outline"

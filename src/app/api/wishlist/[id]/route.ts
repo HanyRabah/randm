@@ -13,12 +13,17 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    // Get user from database first
+    const user = await db.user.findUnique({
+      where: { email: session.user.email }
+    })
+
     // Find and verify ownership of wishlist item
     const wishlistItem = await db.wishlist.findFirst({
       where: {
         id: params.id,
         OR: [
-          { userId: session.user.id },
+          ...(user ? [{ userId: user.id }] : []),
           { customer: { email: session.user.email } }
         ]
       }

@@ -47,11 +47,11 @@ interface ReviewStats {
 }
 
 interface ReviewListProps {
-  productId: string
+  productSlug: string
   refreshTrigger?: number
 }
 
-export function ReviewList({ productId, refreshTrigger }: ReviewListProps) {
+export function ReviewList({ productSlug, refreshTrigger }: ReviewListProps) {
   const { data: session } = useSession()
   const { toast } = useToast()
   const [reviews, setReviews] = useState<Review[]>([])
@@ -75,7 +75,7 @@ export function ReviewList({ productId, refreshTrigger }: ReviewListProps) {
         params.append('rating', filters.rating)
       }
 
-      const response = await fetch(`/api/products/${productId}/reviews?${params}`)
+      const response = await fetch(`/api/products/${productSlug}/reviews?${params}`)
       const data = await response.json()
 
       if (response.ok) {
@@ -93,7 +93,7 @@ export function ReviewList({ productId, refreshTrigger }: ReviewListProps) {
 
   useEffect(() => {
     fetchReviews()
-  }, [productId, filters, showAllReviews, refreshTrigger])
+  }, [productSlug, filters, showAllReviews, refreshTrigger])
 
   const handleVote = async (reviewId: string, isHelpful: boolean) => {
     if (!session) {

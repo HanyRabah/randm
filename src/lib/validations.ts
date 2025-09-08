@@ -2,11 +2,11 @@ import { z } from 'zod'
 
 // Product validations
 export const productSchema = z.object({
-  title: z.string().min(1, 'Title is required'),
+  name: z.string().min(1, 'Name is required'),
   slug: z.string().min(1, 'Slug is required'),
   description: z.string().optional(),
   categoryId: z.string().min(1, 'Category is required'),
-  basePrice: z.number().min(0, 'Price must be positive'),
+  price: z.number().min(0, 'Price must be positive'),
   comparePrice: z.number().min(0).optional(),
   weight: z.number().min(0).optional(),
   tags: z.array(z.string()).default([]),

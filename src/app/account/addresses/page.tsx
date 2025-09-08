@@ -26,11 +26,18 @@ import { toast } from '@/components/ui/use-toast'
 
 interface Address {
   id: string
-  type: 'HOME' | 'WORK' | 'OTHER'
-  street: string
+  firstName: string
+  lastName: string
+  company?: string
+  line1: string
+  line2?: string
   city: string
-  governorate: string
-  postalCode?: string
+  state: string
+  buildingNumber?: string
+  floorNumber?: string
+  apartmentNumber?: string
+  country: string
+  phone?: string
   isDefault: boolean
   createdAt: string
 }
@@ -46,11 +53,18 @@ export default function AddressesPage() {
   const [editingAddress, setEditingAddress] = useState<Address | null>(null)
 
   const [formData, setFormData] = useState({
-    type: 'HOME' as 'HOME' | 'WORK' | 'OTHER',
-    street: '',
+    firstName: '',
+    lastName: '',
+    company: '',
+    line1: '',
+    line2: '',
     city: '',
-    governorate: '',
-    postalCode: '',
+    state: '',
+    buildingNumber: '',
+    floorNumber: '',
+    apartmentNumber: '',
+    country: 'EG',
+    phone: '',
     isDefault: false
   })
 
@@ -85,11 +99,18 @@ export default function AddressesPage() {
 
   const resetForm = () => {
     setFormData({
-      type: 'HOME',
-      street: '',
+      firstName: '',
+      lastName: '',
+      company: '',
+      line1: '',
+      line2: '',
       city: '',
-      governorate: '',
-      postalCode: '',
+      state: '',
+      buildingNumber: '',
+      floorNumber: '',
+      apartmentNumber: '',
+      country: 'EG',
+      phone: '',
       isDefault: false
     })
     setEditingAddress(null)
@@ -141,11 +162,18 @@ export default function AddressesPage() {
   const handleEdit = (address: Address) => {
     setEditingAddress(address)
     setFormData({
-      type: address.type,
-      street: address.street,
+      firstName: address.firstName,
+      lastName: address.lastName,
+      company: address.company || '',
+      line1: address.line1,
+      line2: address.line2 || '',
       city: address.city,
-      governorate: address.governorate,
-      postalCode: address.postalCode || '',
+      state: address.state,
+      buildingNumber: address.buildingNumber || '',
+      floorNumber: address.floorNumber || '',
+      apartmentNumber: address.apartmentNumber || '',
+      country: address.country,
+      phone: address.phone || '',
       isDefault: address.isDefault
     })
     setIsDialogOpen(true)
@@ -203,12 +231,8 @@ export default function AddressesPage() {
     }
   }
 
-  const getAddressIcon = (type: string) => {
-    switch (type) {
-      case 'HOME': return <Home className="h-4 w-4" />
-      case 'WORK': return <Building className="h-4 w-4" />
-      default: return <MapPin className="h-4 w-4" />
-    }
+  const getAddressIcon = () => {
+    return <MapPin className="h-4 w-4" />
   }
 
   if (status === 'loading' || loading) {
@@ -265,31 +289,96 @@ export default function AddressesPage() {
                 </DialogHeader>
                 
                 <form onSubmit={handleSubmit} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="type">Address Type</Label>
-                    <select
-                      id="type"
-                      value={formData.type}
-                      onChange={(e) => handleInputChange('type', e.target.value)}
-                      className="w-full p-2 border rounded-md"
-                      disabled={saving}
-                    >
-                      <option value="HOME">Home</option>
-                      <option value="WORK">Work</option>
-                      <option value="OTHER">Other</option>
-                    </select>
+                  <div className="grid gap-4 grid-cols-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="firstName">First Name</Label>
+                      <Input
+                        id="firstName"
+                        value={formData.firstName}
+                        onChange={(e) => handleInputChange('firstName', e.target.value)}
+                        placeholder="First name"
+                        required
+                        disabled={saving}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="lastName">Last Name</Label>
+                      <Input
+                        id="lastName"
+                        value={formData.lastName}
+                        onChange={(e) => handleInputChange('lastName', e.target.value)}
+                        placeholder="Last name"
+                        required
+                        disabled={saving}
+                      />
+                    </div>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="street">Street Address</Label>
+                    <Label htmlFor="company">Company (Optional)</Label>
                     <Input
-                      id="street"
-                      value={formData.street}
-                      onChange={(e) => handleInputChange('street', e.target.value)}
-                      placeholder="Enter street address"
+                      id="company"
+                      value={formData.company}
+                      onChange={(e) => handleInputChange('company', e.target.value)}
+                      placeholder="Company name"
+                      disabled={saving}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="line1">Address Line 1</Label>
+                    <Input
+                      id="line1"
+                      value={formData.line1}
+                      onChange={(e) => handleInputChange('line1', e.target.value)}
+                      placeholder="Street address"
                       required
                       disabled={saving}
                     />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="line2">Address Line 2 (Optional)</Label>
+                    <Input
+                      id="line2"
+                      value={formData.line2}
+                      onChange={(e) => handleInputChange('line2', e.target.value)}
+                      placeholder="Apartment, suite, etc."
+                      disabled={saving}
+                    />
+                  </div>
+
+                  <div className="grid gap-4 grid-cols-3">
+                    <div className="space-y-2">
+                      <Label htmlFor="buildingNumber">Building Number</Label>
+                      <Input
+                        id="buildingNumber"
+                        value={formData.buildingNumber}
+                        onChange={(e) => handleInputChange('buildingNumber', e.target.value)}
+                        placeholder="Building #"
+                        disabled={saving}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="floorNumber">Floor Number</Label>
+                      <Input
+                        id="floorNumber"
+                        value={formData.floorNumber}
+                        onChange={(e) => handleInputChange('floorNumber', e.target.value)}
+                        placeholder="Floor #"
+                        disabled={saving}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="apartmentNumber">Apartment Number</Label>
+                      <Input
+                        id="apartmentNumber"
+                        value={formData.apartmentNumber}
+                        onChange={(e) => handleInputChange('apartmentNumber', e.target.value)}
+                        placeholder="Apt #"
+                        disabled={saving}
+                      />
+                    </div>
                   </div>
 
                   <div className="grid gap-4 grid-cols-2">
@@ -305,27 +394,45 @@ export default function AddressesPage() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="governorate">Governorate</Label>
+                      <Label htmlFor="state">State/Governorate</Label>
                       <Input
-                        id="governorate"
-                        value={formData.governorate}
-                        onChange={(e) => handleInputChange('governorate', e.target.value)}
-                        placeholder="Governorate"
+                        id="state"
+                        value={formData.state}
+                        onChange={(e) => handleInputChange('state', e.target.value)}
+                        placeholder="State/Governorate"
                         required
                         disabled={saving}
                       />
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="postalCode">Postal Code (Optional)</Label>
-                    <Input
-                      id="postalCode"
-                      value={formData.postalCode}
-                      onChange={(e) => handleInputChange('postalCode', e.target.value)}
-                      placeholder="Postal code"
-                      disabled={saving}
-                    />
+                  <div className="grid gap-4 grid-cols-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="country">Country</Label>
+                      <select
+                        id="country"
+                        value={formData.country}
+                        onChange={(e) => handleInputChange('country', e.target.value)}
+                        className="w-full p-2 border rounded-md"
+                        disabled={saving}
+                        required
+                      >
+                        <option value="EG">Egypt</option>
+                        <option value="US">United States</option>
+                        <option value="CA">Canada</option>
+                        <option value="GB">United Kingdom</option>
+                      </select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="phone">Phone (Optional)</Label>
+                      <Input
+                        id="phone"
+                        value={formData.phone}
+                        onChange={(e) => handleInputChange('phone', e.target.value)}
+                        placeholder="Phone number"
+                        disabled={saving}
+                      />
+                    </div>
                   </div>
 
                   <div className="flex items-center space-x-2">
@@ -376,8 +483,8 @@ export default function AddressesPage() {
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      {getAddressIcon(address.type)}
-                      <CardTitle className="text-lg">{address.type}</CardTitle>
+                      {getAddressIcon()}
+                      <CardTitle className="text-lg">{address.firstName} {address.lastName}</CardTitle>
                     </div>
                     <div className="flex items-center gap-1">
                       {address.isDefault && (
@@ -391,10 +498,22 @@ export default function AddressesPage() {
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div className="text-sm">
-                    <p className="font-medium">{address.street}</p>
-                    <p className="text-gray-600">{address.city}, {address.governorate}</p>
-                    {address.postalCode && (
-                      <p className="text-gray-600">{address.postalCode}</p>
+                    {address.company && (
+                      <p className="font-medium text-gray-700">{address.company}</p>
+                    )}
+                    <p className="font-medium">{address.line1}</p>
+                    {address.line2 && (
+                      <p className="text-gray-600">{address.line2}</p>
+                    )}
+                    <div className="flex gap-2 text-gray-600">
+                      {address.buildingNumber && <span>Bldg {address.buildingNumber}</span>}
+                      {address.floorNumber && <span>Floor {address.floorNumber}</span>}
+                      {address.apartmentNumber && <span>Apt {address.apartmentNumber}</span>}
+                    </div>
+                    <p className="text-gray-600">{address.city}, {address.state}</p>
+                    <p className="text-gray-600">{address.country}</p>
+                    {address.phone && (
+                      <p className="text-gray-600">{address.phone}</p>
                     )}
                   </div>
                   

@@ -139,3 +139,7 @@ dump.rdb
 # Temporary files
 /tmp/
 /temp/
+
+# Prisma
+/prisma/migrations
+/prisma/seed.ts

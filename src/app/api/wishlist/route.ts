@@ -15,10 +15,15 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    // Get user from database first
+    const user = await db.user.findUnique({
+      where: { email: session.user.email }
+    })
+
     const wishlistItems = await db.wishlist.findMany({
       where: {
         OR: [
-          { userId: (session.user as any).id },
+          ...(user ? [{ userId: user.id }] : []),
           { customer: { email: session.user.email } }
         ]
       },
@@ -53,9 +58,9 @@ export async function GET(request: NextRequest) {
       addedAt: item.createdAt.toISOString(),
       product: {
         id: item.product.id,
-        title: item.product.title,
+        title: item.product.name,
         slug: item.product.slug,
-        basePrice: Number(item.product.basePrice),
+        basePrice: Number(item.product.price),
         comparePrice: item.product.comparePrice ? Number(item.product.comparePrice) : null,
         category: item.product.category,
         image: item.product.media[0]?.url || '/placeholder-product.jpg',
@@ -93,19 +98,24 @@ export async function POST(request: NextRequest) {
     // Check if product exists
     const product = await db.product.findUnique({
       where: { id: productId },
-      select: { id: true, title: true, status: true }
+      select: { id: true, name: true, isActive: true }
     })
 
-    if (!product || product.status !== 'PUBLISHED') {
+    if (!product || !product.isActive) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 })
     }
+
+    // Get user from database first
+    const user = await db.user.findUnique({
+      where: { email: session.user.email }
+    })
 
     // Check if already in wishlist
     const existingWishlistItem = await db.wishlist.findFirst({
       where: {
         productId,
         OR: [
-          { userId: session.user.id },
+          ...(user ? [{ userId: user.id }] : []),
           { customer: { email: session.user.email } }
         ]
       }
@@ -115,32 +125,38 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Product already in wishlist' }, { status: 409 })
     }
 
-    // Add to wishlist
     let wishlistItem
-    if ((session.user as any).id) {
-      // For authenticated users
+    if (user) {
+      // Create wishlist item for authenticated user
       wishlistItem = await db.wishlist.create({
         data: {
-          userId: (session.user as any).id,
+          userId: user.id,
           productId
         }
       })
     } else {
-      // For customers (guest checkout users)
-      const customer = await db.customer.findUnique({
+      // Find or create customer for guest checkout
+      let customer = await db.customer.findUnique({
         where: { email: session.user.email }
       })
 
-      if (customer) {
-        wishlistItem = await db.wishlist.create({
+      if (!customer) {
+        customer = await db.customer.create({
           data: {
-            customerId: customer.id,
-            productId
+            email: session.user.email,
+            firstName: session.user.name?.split(' ')[0] || '',
+            lastName: session.user.name?.split(' ').slice(1).join(' ') || ''
           }
         })
-      } else {
-        return NextResponse.json({ error: 'Customer not found' }, { status: 404 })
       }
+
+      // Create wishlist item for customer
+      wishlistItem = await db.wishlist.create({
+        data: {
+          customerId: customer.id,
+          productId
+        }
+      })
     }
 
     return NextResponse.json({

@@ -42,16 +42,16 @@ export async function getProducts(filters: ProductFilters = {}) {
 
   if (search) {
     where.OR = [
-      { title: { contains: search, mode: 'insensitive' } },
+      { name: { contains: search, mode: 'insensitive' } },
       { description: { contains: search, mode: 'insensitive' } },
       { tags: { hasSome: [search] } },
     ]
   }
 
   if (minPrice !== undefined || maxPrice !== undefined) {
-    where.basePrice = {}
-    if (minPrice !== undefined) where.basePrice.gte = minPrice
-    if (maxPrice !== undefined) where.basePrice.lte = maxPrice
+    where.price = {}
+    if (minPrice !== undefined) where.price.gte = minPrice
+    if (maxPrice !== undefined) where.price.lte = maxPrice
   }
 
   // Filter by variant options (colors/sizes)
@@ -80,16 +80,16 @@ export async function getProducts(filters: ProductFilters = {}) {
       orderBy = { createdAt: 'asc' }
       break
     case 'price-asc':
-      orderBy = { basePrice: 'asc' }
+      orderBy = { price: 'asc' }
       break
     case 'price-desc':
-      orderBy = { basePrice: 'desc' }
+      orderBy = { price: 'desc' }
       break
     case 'name-asc':
-      orderBy = { title: 'asc' }
+      orderBy = { name: 'asc' }
       break
     case 'name-desc':
-      orderBy = { title: 'desc' }
+      orderBy = { name: 'desc' }
       break
   }
 

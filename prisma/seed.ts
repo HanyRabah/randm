@@ -4,6 +4,12 @@ async function main() {
   console.log('🌱 Seeding database...')
 
   // Clear existing data
+  await db.newsletterSubscriber.deleteMany()
+  await db.supportMessage.deleteMany()
+  await db.supportTicket.deleteMany()
+  await db.inventoryAlert.deleteMany()
+  await db.review.deleteMany()
+  await db.wishlist.deleteMany()
   await db.media.deleteMany()
   await db.orderItem.deleteMany()
   await db.order.deleteMany()
@@ -97,12 +103,12 @@ async function main() {
   // 1. Modern Coffee Table with Color and Size options
   const coffeeTable = await db.product.create({
     data: {
-      title: 'Modern Glass Coffee Table',
+      name: 'Modern Glass Coffee Table',
       slug: 'modern-glass-coffee-table',
       description: 'Elegant glass coffee table with chrome legs. Perfect centerpiece for modern living rooms.',
-      status: 'PUBLISHED',
+      isActive: true,
       categoryId: categories[0].id,
-      basePrice: 9299.00,
+      price: 8999.00,
       comparePrice: 12399.00,
       weight: 25.5,
       tags: ['modern', 'glass', 'chrome', 'living room'],
@@ -172,7 +178,7 @@ async function main() {
       data: {
         productId: coffeeTable.id,
         sku: 'CT-CLEAR-SM-001',
-        price: 9299.00,
+        price: 8999.00,
         comparePrice: 12399.00,
         inventory: 15,
         isDefault: true,
@@ -329,12 +335,12 @@ async function main() {
   // 2. Ergonomic Office Chair with Color and Material options
   const officeChair = await db.product.create({
     data: {
-      title: 'Ergonomic Office Chair',
+      name: 'Ergonomic Office Chair',
       slug: 'ergonomic-office-chair',
       description: 'Premium ergonomic office chair with lumbar support and adjustable height. Perfect for long work sessions.',
-      status: 'PUBLISHED',
+      isActive: true,
       categoryId: categories[2].id,
-      basePrice: 6199.00,
+      price: 6199.00,
       comparePrice: 9299.00,
       weight: 18.0,
       tags: ['ergonomic', 'office', 'adjustable', 'lumbar support'],
@@ -589,12 +595,12 @@ async function main() {
   // 3. Simple product without variants (Standing Desk)
   const standingDesk = await db.product.create({
     data: {
-      title: 'Electric Standing Desk',
+      name: 'Electric Standing Desk',
       slug: 'electric-standing-desk',
       description: 'Height-adjustable electric standing desk with memory presets. Transform your workspace for better health and productivity.',
-      status: 'PUBLISHED',
+      isActive: true,
       categoryId: categories[1].id,
-      basePrice: 18599.00,
+      price: 18999.00,
       comparePrice: 24799.00,
       weight: 45.0,
       tags: ['standing desk', 'electric', 'adjustable', 'ergonomic', 'health'],
@@ -703,9 +709,11 @@ async function main() {
             line1: '123 Main Street',
             line2: 'Apt 4B',
             city: 'New York',
-            region: 'NY',
-            country: 'United States',
-            postalCode: '10001',
+            state: 'NY',
+            buildingNumber: '123',
+            floorNumber: '4',
+            apartmentNumber: '4B',
+            country: 'US',
             phone: '+1234567890',
             isDefault: true,
           }
@@ -724,9 +732,11 @@ async function main() {
             lastName: 'Wilson',
             line1: '456 Oak Avenue',
             city: 'Los Angeles',
-            region: 'CA',
-            country: 'United States',
-            postalCode: '90210',
+            state: 'CA',
+            buildingNumber: '456',
+            floorNumber: '2',
+            apartmentNumber: '2A',
+            country: 'US',
             phone: '+1987654321',
             isDefault: true,
           }
@@ -746,9 +756,11 @@ async function main() {
             company: 'Design Studio',
             line1: '789 Pine Street',
             city: 'Chicago',
-            region: 'IL',
-            country: 'United States',
-            postalCode: '60601',
+            state: 'IL',
+            buildingNumber: '789',
+            floorNumber: '3',
+            apartmentNumber: '3C',
+            country: 'US',
             phone: '+1555123456',
             isDefault: true,
           }
@@ -846,14 +858,454 @@ async function main() {
 
   console.log('✅ Created orders')
 
+  // Create more products for better testing
+  const modernSofa = await db.product.create({
+    data: {
+      name: 'Modern 3-Seater Sofa',
+      slug: 'modern-3-seater-sofa',
+      description: 'Luxurious 3-seater sofa with premium fabric upholstery. Perfect for modern living rooms and entertainment spaces.',
+      isActive: true,
+      categoryId: categories[4].id, // Sofas
+      price: 24999.00,
+      comparePrice: 31999.00,
+      weight: 85.0,
+      tags: ['sofa', 'modern', 'luxury', 'living room', '3-seater'],
+      seoTitle: 'Modern 3-Seater Sofa - Premium Living Room Furniture',
+      seoDescription: 'Luxury 3-seater sofa with premium fabric upholstery. Transform your living room with our modern furniture collection.',
+    },
+  })
+
+  const sofaVariant = await db.variant.create({
+    data: {
+      productId: modernSofa.id,
+      sku: 'SOFA-3SEAT-001',
+      price: 24999.00,
+      comparePrice: 31999.00,
+      inventory: 4,
+      isDefault: true,
+    },
+  })
+
+  await db.media.create({
+    data: {
+      productId: modernSofa.id,
+      url: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800',
+      altText: 'Modern 3-seater sofa in living room',
+      position: 0,
+    },
+  })
+
+  const diningTable = await db.product.create({
+    data: {
+      name: 'Oak Dining Table',
+      slug: 'oak-dining-table',
+      description: 'Solid oak dining table that seats 6 people comfortably. Handcrafted with attention to detail and built to last generations.',
+      isActive: true,
+      categoryId: categories[5].id, // Dining Tables
+      price: 15499.00,
+      comparePrice: 19999.00,
+      weight: 65.0,
+      tags: ['dining table', 'oak', 'solid wood', 'handcrafted', '6-seater'],
+      seoTitle: 'Oak Dining Table - Solid Wood 6-Seater',
+      seoDescription: 'Handcrafted solid oak dining table seats 6 people. Premium quality wood furniture built to last generations.',
+    },
+  })
+
+  const diningTableVariant = await db.variant.create({
+    data: {
+      productId: diningTable.id,
+      sku: 'DT-OAK-6SEAT-001',
+      price: 15499.00,
+      comparePrice: 19999.00,
+      inventory: 3,
+      isDefault: true,
+    },
+  })
+
+  await db.media.create({
+    data: {
+      productId: diningTable.id,
+      url: 'https://images.unsplash.com/photo-1449247709967-d4461a6a6103?w=800',
+      altText: 'Solid oak dining table with 6 chairs',
+      position: 0,
+    },
+  })
+
+  const bookshelf = await db.product.create({
+    data: {
+      name: 'Industrial Bookshelf',
+      slug: 'industrial-bookshelf',
+      description: 'Industrial-style bookshelf with metal frame and wooden shelves. Perfect for displaying books, decor, and personal items.',
+      isActive: true,
+      categoryId: categories[3].id, // Storage
+      price: 4999.00,
+      comparePrice: 6999.00,
+      weight: 35.0,
+      tags: ['bookshelf', 'industrial', 'storage', 'metal', 'wood'],
+      seoTitle: 'Industrial Bookshelf - Metal Frame Storage',
+      seoDescription: 'Industrial-style bookshelf with metal frame and wooden shelves. Stylish storage solution for any room.',
+    },
+  })
+
+  const bookshelfVariant = await db.variant.create({
+    data: {
+      productId: bookshelf.id,
+      sku: 'BS-INDUSTRIAL-001',
+      price: 4999.00,
+      comparePrice: 6999.00,
+      inventory: 12,
+      isDefault: true,
+    },
+  })
+
+  await db.media.create({
+    data: {
+      productId: bookshelf.id,
+      url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800',
+      altText: 'Industrial bookshelf with books and decor',
+      position: 0,
+    },
+  })
+
+  console.log('✅ Created additional products')
+
+  // Create test users for authentication
+  const testUsers = await Promise.all([
+    db.user.create({
+      data: {
+        email: 'user@test.com',
+        name: 'Test User',
+        role: 'CUSTOMER',
+      },
+    }),
+    db.user.create({
+      data: {
+        email: 'customer@test.com',
+        name: 'Customer User',
+        role: 'CUSTOMER',
+      },
+    }),
+  ])
+
+  console.log('✅ Created test users')
+
+  // Create product reviews
+  const reviews = await Promise.all([
+    db.review.create({
+      data: {
+        productId: coffeeTable.id,
+        userId: testUsers[0].id,
+        rating: 5,
+        title: 'Beautiful coffee table!',
+        comment: 'This coffee table exceeded my expectations. The glass is high quality and the chrome legs are very sturdy. Perfect for my modern living room.',
+        isVerified: true,
+        helpfulVotes: 12,
+      },
+    }),
+    db.review.create({
+      data: {
+        productId: coffeeTable.id,
+        userId: testUsers[1].id,
+        rating: 4,
+        title: 'Great quality, fast shipping',
+        comment: 'Really happy with this purchase. The table arrived well-packaged and assembly was straightforward. Only minor complaint is it shows fingerprints easily.',
+        isVerified: true,
+        helpfulVotes: 8,
+      },
+    }),
+    db.review.create({
+      data: {
+        productId: officeChair.id,
+        userId: testUsers[0].id,
+        rating: 5,
+        title: 'Best chair I\'ve ever owned',
+        comment: 'As someone who works from home, this chair has been a game-changer. The lumbar support is excellent and it\'s comfortable for 8+ hour days.',
+        isVerified: true,
+        helpfulVotes: 15,
+      },
+    }),
+    db.review.create({
+      data: {
+        productId: standingDesk.id,
+        userId: testUsers[1].id,
+        rating: 4,
+        title: 'Good desk, minor issues',
+        comment: 'The desk is solid and the height adjustment works smoothly. The memory presets are convenient. Assembly took longer than expected but overall satisfied.',
+        isVerified: false,
+        helpfulVotes: 6,
+      },
+    }),
+    db.review.create({
+      data: {
+        productId: modernSofa.id,
+        userId: testUsers[0].id,
+        rating: 5,
+        title: 'Absolutely love this sofa!',
+        comment: 'This sofa is incredibly comfortable and looks amazing in our living room. The fabric quality is excellent and it\'s held up well with daily use.',
+        isVerified: true,
+        helpfulVotes: 9,
+      },
+    }),
+  ])
+
+  console.log('✅ Created product reviews')
+
+  // Create wishlist items
+  await Promise.all([
+    db.wishlist.create({
+      data: {
+        userId: testUsers[0].id,
+        productId: diningTable.id,
+      },
+    }),
+    db.wishlist.create({
+      data: {
+        userId: testUsers[0].id,
+        productId: bookshelf.id,
+      },
+    }),
+    db.wishlist.create({
+      data: {
+        userId: testUsers[1].id,
+        productId: modernSofa.id,
+      },
+    }),
+    db.wishlist.create({
+      data: {
+        userId: testUsers[1].id,
+        productId: standingDesk.id,
+      },
+    }),
+  ])
+
+  console.log('✅ Created wishlist items')
+
+  // Create newsletter subscribers
+  const subscribers = await Promise.all([
+    db.newsletterSubscriber.create({
+      data: {
+        email: 'subscriber1@example.com',
+        firstName: 'Alice',
+        lastName: 'Smith',
+        isActive: true,
+        preferences: {
+          newProducts: true,
+          promotions: true,
+          tips: false,
+        },
+      },
+    }),
+    db.newsletterSubscriber.create({
+      data: {
+        email: 'subscriber2@example.com',
+        firstName: 'Bob',
+        lastName: 'Brown',
+        isActive: true,
+        preferences: {
+          newProducts: false,
+          promotions: true,
+          tips: true,
+        },
+      },
+    }),
+    db.newsletterSubscriber.create({
+      data: {
+        email: 'subscriber3@example.com',
+        isActive: false,
+        preferences: {
+          newProducts: true,
+          promotions: false,
+          tips: false,
+        },
+      },
+    }),
+  ])
+
+  console.log('✅ Created newsletter subscribers')
+
+  // Create inventory alerts
+  const inventoryAlerts = await Promise.all([
+    db.inventoryAlert.create({
+      data: {
+        productId: coffeeTable.id,
+        variantId: coffeeTableVariants[2].id, // Smoked Glass - Small (Low Stock)
+        alertType: 'LOW_STOCK',
+        threshold: 5,
+        isActive: true,
+      },
+    }),
+    db.inventoryAlert.create({
+      data: {
+        productId: officeChair.id,
+        variantId: chairVariants[2].id, // Gray Mesh (Low Stock)
+        alertType: 'LOW_STOCK',
+        threshold: 5,
+        isActive: true,
+      },
+    }),
+    db.inventoryAlert.create({
+      data: {
+        productId: officeChair.id,
+        variantId: chairVariants[3].id, // Gray Leather (Out of Stock)
+        alertType: 'OUT_OF_STOCK',
+        threshold: 0,
+        isActive: true,
+        lastAlertSent: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
+      },
+    }),
+  ])
+
+  console.log('✅ Created inventory alerts')
+
+  // Create support tickets
+  const supportTickets = await Promise.all([
+    db.supportTicket.create({
+      data: {
+        ticketNumber: 'TICKET-20240908-0001',
+        subject: 'Question about delivery time',
+        description: 'Hi, I placed an order yesterday and wanted to know when I can expect delivery. My order number is ORD-2024-002.',
+        status: 'OPEN',
+        priority: 'MEDIUM',
+        category: 'ORDER',
+        customerEmail: 'sarah.wilson@example.com',
+        customerName: 'Sarah Wilson',
+        customerId: customers[1].id,
+      },
+    }),
+    db.supportTicket.create({
+      data: {
+        ticketNumber: 'TICKET-20240908-0002',
+        subject: 'Assembly instructions missing',
+        description: 'I received my coffee table but the assembly instructions were not included in the package. Could you please send them to me?',
+        status: 'IN_PROGRESS',
+        priority: 'HIGH',
+        category: 'PRODUCT',
+        customerEmail: 'john.doe@example.com',
+        customerName: 'John Doe',
+        customerId: customers[0].id,
+        assignedToId: adminUser.id,
+      },
+    }),
+    db.supportTicket.create({
+      data: {
+        ticketNumber: 'TICKET-20240908-0003',
+        subject: 'Billing inquiry',
+        description: 'I was charged twice for my recent order. Can you please check and refund the duplicate charge?',
+        status: 'RESOLVED',
+        priority: 'URGENT',
+        category: 'BILLING',
+        customerEmail: 'mike.johnson@example.com',
+        customerName: 'Mike Johnson',
+        customerId: customers[2].id,
+        assignedToId: adminUser.id,
+        resolvedAt: new Date(Date.now() - 24 * 60 * 60 * 1000), // 1 day ago
+      },
+    }),
+  ])
+
+  // Create support messages
+  await Promise.all([
+    db.supportMessage.create({
+      data: {
+        ticketId: supportTickets[1].id,
+        content: 'Thank you for contacting us. I\'ve located your order and will email you the assembly instructions right away.',
+        isFromCustomer: false,
+        userId: adminUser.id,
+        senderName: 'Admin Support',
+      },
+    }),
+    db.supportMessage.create({
+      data: {
+        ticketId: supportTickets[1].id,
+        content: 'Perfect, I received the instructions. Thank you for the quick response!',
+        isFromCustomer: true,
+        customerEmail: 'john.doe@example.com',
+        senderName: 'John Doe',
+      },
+    }),
+    db.supportMessage.create({
+      data: {
+        ticketId: supportTickets[2].id,
+        content: 'I\'ve reviewed your account and confirmed the duplicate charge. The refund has been processed and should appear in your account within 3-5 business days.',
+        isFromCustomer: false,
+        userId: adminUser.id,
+        senderName: 'Admin Support',
+      },
+    }),
+    db.supportMessage.create({
+      data: {
+        ticketId: supportTickets[2].id,
+        content: 'Thank you so much for resolving this quickly!',
+        isFromCustomer: true,
+        customerEmail: 'mike.johnson@example.com',
+        senderName: 'Mike Johnson',
+      },
+    }),
+  ])
+
+  console.log('✅ Created support tickets and messages')
+
+  // Create shopping carts for test users
+  await Promise.all([
+    db.cart.create({
+      data: {
+        sessionId: 'session_' + testUsers[0].id,
+        userId: testUsers[0].id,
+        items: {
+          create: [
+            {
+              productId: bookshelf.id,
+              variantId: bookshelfVariant.id,
+              quantity: 1,
+            },
+            {
+              productId: coffeeTable.id,
+              variantId: coffeeTableVariants[0].id,
+              quantity: 1,
+            },
+          ],
+        },
+      },
+    }),
+    db.cart.create({
+      data: {
+        sessionId: 'session_' + testUsers[1].id,
+        userId: testUsers[1].id,
+        items: {
+          create: [
+            {
+              productId: officeChair.id,
+              variantId: chairVariants[4].id, // Blue Mesh
+              quantity: 2,
+            },
+          ],
+        },
+      },
+    }),
+  ])
+
+  console.log('✅ Created shopping carts')
+
+  const totalProducts = products.length + 3; // Original products + new ones
+  const totalReviews = reviews.length;
+  const totalSubscribers = subscribers.length;
+  const totalTickets = supportTickets.length;
+  const totalAlerts = inventoryAlerts.length;
+
   console.log(`🎉 Seed completed successfully!`)
   console.log(`📊 Created:`)
   console.log(`   - ${categories.length} categories`)
-  console.log(`   - ${products.length} products with variants and variant-specific images`)
+  console.log(`   - ${totalProducts} products with variants and variant-specific images`)
   console.log(`   - ${customers.length} customers with addresses`)
   console.log(`   - ${orders.length} sample orders`)
   console.log(`   - ${coupons.length} coupons`)
-  console.log(`   - 1 admin user`)
+  console.log(`   - ${testUsers.length + 1} users (1 admin + ${testUsers.length} regular users)`)
+  console.log(`   - ${totalReviews} product reviews`)
+  console.log(`   - 4 wishlist items`)
+  console.log(`   - ${totalSubscribers} newsletter subscribers`)
+  console.log(`   - ${totalAlerts} inventory alerts`)
+  console.log(`   - ${totalTickets} support tickets with messages`)
+  console.log(`   - 2 shopping carts with items`)
   console.log(`\n🔑 Admin Login:`)
   console.log(`   Email: admin@furniturestore.com`)
   console.log(`   Password: any password (development mode)`)

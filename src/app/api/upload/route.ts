@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { put } from '@vercel/blob'
 
 export async function POST(request: NextRequest) {
   try {
@@ -21,40 +22,26 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'File too large' }, { status: 400 })
     }
 
-    // Convert file to buffer
-    const bytes = await file.arrayBuffer()
-    const buffer = Buffer.from(bytes)
-
     // Generate unique filename
     const timestamp = Date.now()
     const randomString = Math.random().toString(36).substring(2, 15)
     const extension = file.name.split('.').pop()
-    const filename = `${timestamp}-${randomString}.${extension}`
+    const filename = `products/${timestamp}-${randomString}.${extension}`
 
-    // TODO: Upload to blob storage when BLOB_URL is configured
-    // For now, we'll simulate the upload and return a placeholder URL
-    const blobUrl = process.env.BLOB_URL
+    // Check if Vercel Blob token is configured
+    const blobToken = process.env.BLOB_READ_WRITE_TOKEN
     
-    if (blobUrl) {
-      // Upload to actual blob storage
-      const uploadResponse = await fetch(`${blobUrl}/upload`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/octet-stream',
-          'X-Filename': filename,
-        },
-        body: buffer,
+    if (blobToken) {
+      // Upload to Vercel Blob storage
+      const blob = await put(filename, file, {
+        access: 'public',
+        token: blobToken,
       })
 
-      if (!uploadResponse.ok) {
-        throw new Error('Failed to upload to blob storage')
-      }
-
-      const { url } = await uploadResponse.json()
-      return NextResponse.json({ url })
+      return NextResponse.json({ url: blob.url })
     } else {
       // Development mode - return a placeholder URL
-      console.log('BLOB_URL not configured, using placeholder URL')
+      console.log('BLOB_READ_WRITE_TOKEN not configured, using placeholder URL')
       const placeholderUrl = `https://via.placeholder.com/400x400/cccccc/666666?text=${encodeURIComponent(file.name)}`
       return NextResponse.json({ url: placeholderUrl })
     }

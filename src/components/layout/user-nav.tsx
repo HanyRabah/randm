@@ -115,17 +115,15 @@ export function UserNav() {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/account/wishlist">
-            <DropdownMenuItem>
-              <Heart className="mr-2 h-4 w-4" />
-              My Wishlist
-            </DropdownMenuItem>
+          <Link href="/account/wishlist" className="cursor-pointer">
+            <Heart className="mr-2 h-4 w-4" />
+            <span>My Wishlist</span>
           </Link>
-          <Link href="/support">
-            <DropdownMenuItem>
-              <MessageCircle className="mr-2 h-4 w-4" />
-              Support
-            </DropdownMenuItem>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/support" className="cursor-pointer">
+            <MessageCircle className="mr-2 h-4 w-4" />
+            <span>Support</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />

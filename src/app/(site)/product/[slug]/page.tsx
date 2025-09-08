@@ -24,20 +24,19 @@ export async function generateMetadata({ params }: ProductPageProps) {
   }
 
   const defaultVariant = product.variants.find((v: any) => v.isDefault) || product.variants[0]
-  const price = defaultVariant?.price || product.basePrice
+  const price = defaultVariant?.price || product.price
   
   // Use custom SEO fields if available, otherwise generate from product data
-  const seoTitle = product.seoTitle || `${product.title} - Premium Furniture`
+  const seoTitle = product.seoTitle || `${product.name} - Premium Furniture`
   const seoDescription = product.seoDescription || 
     product.description || 
-    `Buy ${product.title} with Cash on Delivery. Premium furniture with quality guarantee and fast shipping.`
+    `Shop ${product.name} - Premium furniture with Cash on Delivery, fast shipping, and quality guarantee.`
 
   return await generateSEOMetadata({
     title: seoTitle,
     description: seoDescription,
-    image: product.media[0]?.url,
     url: `/product/${product.slug}`,
-    type: 'product',
+    image: product.media.length > 0 ? product.media[0].url : undefined,
   })
 }
 
@@ -48,37 +47,43 @@ export default async function ProductPage({ params }: ProductPageProps) {
     notFound()
   }
 
-  const breadcrumbs = await getCategoryHierarchy(product.category.slug)
+  const breadcrumbs = product.category ? await getCategoryHierarchy(product.category.slug) : []
   const defaultVariant = product.variants.find((v: any) => v.isDefault) || product.variants[0]
 
   // Generate JSON-LD for SEO
   const jsonLd = generateProductJsonLd({
-    name: product.title,
+    name: product.name,
     description: product.seoDescription || product.description || undefined,
     image: product.media.map((m: any) => m.url),
-    price: Number(defaultVariant?.price) || Number(product.basePrice),
+    price: Number(defaultVariant?.price) || Number(product.price),
     availability: defaultVariant && defaultVariant.inventory > 0 ? 'InStock' : 'OutOfStock',
     sku: defaultVariant?.sku,
-    category: product.category.name,
+    category: product.category?.name,
     url: `${process.env.NEXTAUTH_URL}/product/${product.slug}`,
     brand: 'Furniture Store',
   })
 
   const productStructuredData = {
-    name: product.title,
-    description: product.seoDescription || product.description,
-    images: product.media.map((m: any) => m.url),
-    price: Number(defaultVariant?.price) || Number(product.basePrice),
-    inStock: defaultVariant && defaultVariant.inventory > 0,
-    sku: defaultVariant?.sku,
-    slug: product.slug,
+    "@type": "Product",
+    "name": product.name,
+    "description": product.description,
+    "image": product.media.map(m => m.url),
+    "offers": {
+      "@type": "Offer",
+      "price": product.price,
+      "priceCurrency": "USD",
+      "availability": "https://schema.org/InStock"
+    },
+    "category": product.category?.name,
+    "sku": defaultVariant?.sku || product.slug,
+    "slug": product.slug,
   }
 
   const breadcrumbData = {
     items: [
       { name: 'Home', href: '/' },
-      ...breadcrumbs,
-      { name: product.title, href: `/product/${product.slug}` }
+      ...(product.category ? [{ name: product.category.name, href: `/category/${product.category.slug}` }] : []),
+      { name: product.name, href: `/product/${product.slug}` }
     ]
   }
 
@@ -96,8 +101,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
         <Breadcrumbs 
           items={[
             { name: 'Home', href: '/' },
-            ...breadcrumbs,
-            { name: product.title, href: `/product/${product.slug}` },
+            ...(product.category ? [{ name: product.category.name, href: `/category/${product.category.slug}` }] : []),
+            { name: product.name, href: `/product/${product.slug}` },
           ]} 
         />
 
@@ -120,7 +125,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         <div className="mt-16">
           <h2 className="text-2xl font-bold mb-6">Customer Reviews</h2>
           <Suspense fallback={<div>Loading reviews...</div>}>
-            <ReviewsSection productId={product.id} />
+            <ReviewsSection productSlug={product.slug} />
           </Suspense>
         </div>
 

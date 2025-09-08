@@ -5,11 +5,18 @@ import { db } from '@/lib/db'
 import { z } from 'zod'
 
 const createAddressSchema = z.object({
-  type: z.enum(['HOME', 'WORK', 'OTHER']),
-  street: z.string().min(1),
+  firstName: z.string().min(1),
+  lastName: z.string().min(1),
+  company: z.string().optional(),
+  line1: z.string().min(1),
+  line2: z.string().optional(),
   city: z.string().min(1),
-  governorate: z.string().min(1),
-  postalCode: z.string().optional(),
+  state: z.string().min(1),
+  buildingNumber: z.string().optional(),
+  floorNumber: z.string().optional(),
+  apartmentNumber: z.string().optional(),
+  country: z.string().min(1),
+  phone: z.string().optional(),
   isDefault: z.boolean().default(false)
 })
 
@@ -75,11 +82,18 @@ export async function POST(request: NextRequest) {
     const address = await db.address.create({
       data: {
         userId: user.id,
-        type: validatedData.type,
-        street: validatedData.street,
+        firstName: validatedData.firstName,
+        lastName: validatedData.lastName,
+        company: validatedData.company,
+        line1: validatedData.line1,
+        line2: validatedData.line2,
         city: validatedData.city,
-        governorate: validatedData.governorate,
-        postalCode: validatedData.postalCode,
+        state: validatedData.state,
+        buildingNumber: validatedData.buildingNumber,
+        floorNumber: validatedData.floorNumber,
+        apartmentNumber: validatedData.apartmentNumber,
+        country: validatedData.country,
+        phone: validatedData.phone,
         isDefault: validatedData.isDefault
       }
     })

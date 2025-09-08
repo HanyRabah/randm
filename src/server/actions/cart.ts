@@ -28,7 +28,7 @@ async function getOrCreateCart() {
         product: {
           include: {
             media: {
-              orderBy: { position: 'asc' },
+              orderBy: { position: 'asc' as const },
               take: 1,
             },
           },
@@ -126,9 +126,9 @@ export async function addToCart(formData: FormData) {
     const validatedData = addToCartSchema.parse(data)
     const cart = await getOrCreateCart()
 
-    // Check if product exists and is published
+    // Check if product exists and is active
     const product = await db.product.findUnique({
-      where: { id: validatedData.productId, status: 'PUBLISHED' },
+      where: { id: validatedData.productId, isActive: true },
       include: {
         variants: validatedData.variantId
           ? { where: { id: validatedData.variantId } }
