@@ -12,6 +12,7 @@
     "db:studio": "prisma studio",
     "db:generate": "prisma generate",
     "seed": "tsx prisma/seed.ts",
+    "backfill:tenant": "tsx scripts/backfill-tenant.ts",
     "export:courier": "tsx scripts/export-courier-csv.ts",
     "test": "vitest",
     "test:ui": "vitest --ui",

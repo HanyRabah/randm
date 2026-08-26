@@ -41,10 +41,9 @@ Nothing multi-tenant exists today. This is the ordered path:
 - ✅ Add `TenantMember` (tenantId, userId, role: OWNER/ADMIN/STAFF).
 - ✅ `getTenant()` helper resolves per-request from Host or `x-tenant-slug`.
 - ✅ Nullable `tenantId` added to root business models: `Category`, `Product`, `Cart`, `Order`, `Coupon`, `Popup`, `NewsletterSubscriber`, `NewsletterCampaign`, `Review`, `Wishlist`, `Customer`, `SupportTicket`, `InventoryAlert`, `SeoSettings` (unique).
-- ✅ `tenantScope()`/`getTenantId()` helpers spread into Prisma `where` clauses; default tenant auto-provisions on first read.
-- Next: backfill legacy rows to the default tenant, then flip `tenantId` to NOT NULL.
-- Convert single-column `@unique` on `slug`/`code`/`sku`/`email` to composite `(tenantId, x)` (blocked on NOT NULL flip).
-- Wire `tenantScope()` into every route handler and server action (route-by-route pass).
+- ✅ Prisma client extension in `src/lib/db.ts` auto-scopes every query on tenant models — no route-by-route wiring needed. `findMany/findFirst/count/aggregate/groupBy/updateMany/deleteMany` inject `where.tenantId`; `create/createMany/upsert.create` inject `data.tenantId`. `findUnique/update/delete` on `id` stay unscoped (ids are globally unique cuids).
+- ✅ `scripts/backfill-tenant.ts` (via `pnpm backfill:tenant`) assigns the default tenant to legacy `null` rows. Idempotent.
+- Next: after backfill runs on staging + prod, flip `tenantId` to NOT NULL and swap single-column `@unique` (Product.slug, Coupon.code, Customer.email, NewsletterSubscriber.email) to composite `(tenantId, x)` so a real second tenant can't hit slug collisions.
 
 ### 2.2 Tenant resolution
 - Add [src/middleware.ts](src/middleware.ts) that reads `Host` header:
