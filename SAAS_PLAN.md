@@ -46,7 +46,9 @@ Nothing multi-tenant exists today. This is the ordered path:
 - ✅ `tenantId` flipped to NOT NULL on all 14 business models; composite `@@unique([tenantId, slug/code/email])` on Category, Product, Coupon, Customer, NewsletterSubscriber.
 - ✅ Admin layout now checks TenantMember before rendering — a signed-in ADMIN who is not a member of the resolved tenant gets bounced to `/onboarding?error=no-access`.
 - ✅ Backfill script auto-enrols every legacy ADMIN as OWNER of the default tenant (idempotent) so the seeded admin isn't locked out.
-- Next: real Host-based routing (`<slug>.storely.app` → resolve without cookie/query bridge).
+- ✅ Host-based routing in `src/middleware.ts`: `<slug>.storely.app` or `<slug>.localhost` → `x-tenant-slug` header, forwarded to the Prisma extension. Cookie/query bridge stays as a fallback for `*.vercel.app` preview URLs.
+- Live setup for the real apex needs: (1) point `storely.app` at Vercel, (2) add `*.storely.app` as a wildcard domain in the Vercel project, (3) set `STORELY_APEX_HOST=storely.app` in Vercel env.
+- Local dev: hit `<slug>.localhost:3000` (all modern browsers resolve `*.localhost` to 127.0.0.1) — no `/etc/hosts` edit needed.
 
 ### 2.2 Tenant resolution
 - Add [src/middleware.ts](src/middleware.ts) that reads `Host` header:
