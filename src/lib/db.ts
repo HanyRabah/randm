@@ -1,5 +1,20 @@
 import { PrismaClient } from '@prisma/client'
-import { cache } from 'react'
+import { cache as reactCache } from 'react'
+
+// react.cache is only defined in the RSC runtime. In plain Node contexts
+// (seed scripts, backfill, cron) fall back to a process-lifetime memo so
+// the extension can still call this safely.
+const cache: typeof reactCache =
+  typeof reactCache === 'function'
+    ? reactCache
+    : (((fn: any) => {
+        let cached: any
+        let called = false
+        return (...args: any[]) => {
+          if (!called) { cached = fn(...args); called = true }
+          return cached
+        }
+      }) as unknown as typeof reactCache)
 
 // Lazy so this module can be imported from client-side bundles without
 // pulling in `next/headers` (which would poison the client build). The
