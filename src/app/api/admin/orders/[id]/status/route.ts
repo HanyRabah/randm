@@ -79,7 +79,7 @@ export async function PUT(
             name: true
           }
         },
-        shippingAddress: true
+        address: true
       }
     })
 

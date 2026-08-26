@@ -56,7 +56,7 @@ async function getOrder(orderId: string, userEmail?: string | null) {
           name: true
         }
       },
-      shippingAddress: true,
+      address: true,
       coupon: true
     }
   })
@@ -90,10 +90,10 @@ export default async function OrderPage({ params }: OrderPageProps) {
     contactPhone: order.contactPhone,
     createdAt: order.createdAt.toISOString(),
     updatedAt: order.updatedAt.toISOString(),
-    shippingAddress: order.shippingAddress ? {
-      street: order.shippingAddress.street,
-      city: order.shippingAddress.city,
-      governorate: order.shippingAddress.governorate
+    address: order.address ? {
+      street: order.address.street,
+      city: order.address.city,
+      governorate: order.address.governorate
     } : undefined,
     total: Number(order.total),
     subtotal: Number(order.subtotal),

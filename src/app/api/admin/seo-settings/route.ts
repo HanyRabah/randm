@@ -44,7 +44,7 @@ export async function GET() {
     if (!seoSettings) {
       seoSettings = await db.seoSettings.create({
         data: {
-          siteName: 'R&M Store',
+          siteName: 'Rana',
           siteDescription: 'Premium furniture and home decor with Cash on Delivery',
           siteKeywords: ['furniture', 'home decor', 'cash on delivery', 'Egypt'],
           siteUrl: 'https://rmstore.com',

@@ -91,7 +91,7 @@ export default function SignUpPage() {
               Create Your Account
             </CardTitle>
             <CardDescription className="text-gray-600">
-              Join R&M Store for exclusive furniture collections and personalized shopping experience
+              Join Rana for exclusive furniture collections and personalized shopping experience
             </CardDescription>
           </CardHeader>
           

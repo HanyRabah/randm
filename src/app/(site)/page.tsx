@@ -129,7 +129,7 @@ export default async function HomePage() {
               Premium Experience
             </Badge>
             <h2 className="text-4xl lg:text-5xl font-bold tracking-tight mb-6">
-              The R&M Difference
+              The Rana Difference
             </h2>
             <p className="text-xl text-muted-foreground leading-relaxed">
               Experience luxury shopping with uncompromising quality, exceptional service, 
@@ -317,7 +317,7 @@ export default async function HomePage() {
               What Our Customers Say
             </h2>
             <p className="text-xl text-muted-foreground leading-relaxed">
-              Real experiences from real customers who transformed their homes with R&M Store.
+              Real experiences from real customers who transformed their homes with Rana.
             </p>
           </div>
 

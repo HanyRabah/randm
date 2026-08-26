@@ -8,7 +8,7 @@ import { generateMetadata as generateSeoMetadata } from '@/lib/seo'
 export async function generateMetadata(): Promise<Metadata> {
   return await generateSeoMetadata({
     title: 'Privacy Policy - Your Data Protection',
-    description: 'R&M Store privacy policy. Learn how we collect, use, and protect your personal information with industry-leading security measures.',
+    description: 'Rana privacy policy. Learn how we collect, use, and protect your personal information with industry-leading security measures.',
     url: '/privacy',
   })
 }

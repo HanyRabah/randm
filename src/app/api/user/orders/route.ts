@@ -36,7 +36,7 @@ export async function GET() {
             }
           }
         },
-        shippingAddress: true
+        address: true
       },
       orderBy: { createdAt: 'desc' }
     })
@@ -48,10 +48,10 @@ export async function GET() {
       total: Number(order.total),
       shippingCost: Number(order.shippingCost),
       paymentMethod: order.paymentMethod,
-      shippingAddress: {
-        street: order.shippingAddress?.street || '',
-        city: order.shippingAddress?.city || '',
-        governorate: order.shippingAddress?.governorate || ''
+      address: {
+        street: order.address?.street || '',
+        city: order.address?.city || '',
+        governorate: order.address?.governorate || ''
       },
       createdAt: order.createdAt.toISOString(),
       updatedAt: order.updatedAt.toISOString(),

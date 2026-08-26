@@ -63,7 +63,7 @@ export default function CustomerSignInPage() {
               Welcome Back
             </CardTitle>
             <CardDescription className="text-gray-600">
-              Sign in to your R&M Store account to continue shopping
+              Sign in to your Rana account to continue shopping
             </CardDescription>
           </CardHeader>
           
