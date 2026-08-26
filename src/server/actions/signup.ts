@@ -48,30 +48,38 @@ export async function signup(input: SignupInput): Promise<SignupResult> {
     return { ok: false, error: 'That subdomain is reserved', field: 'slug' }
   }
 
-  const [emailTaken, slugTaken] = await Promise.all([
-    base.user.findUnique({ where: { email: data.email }, select: { id: true } }),
-    base.tenant.findUnique({ where: { slug }, select: { id: true } }),
-  ])
-  if (emailTaken) return { ok: false, error: 'That email is already registered', field: 'email' }
-  if (slugTaken) return { ok: false, error: 'That subdomain is taken', field: 'slug' }
+  try {
+    const [emailTaken, slugTaken] = await Promise.all([
+      base.user.findUnique({ where: { email: data.email }, select: { id: true } }),
+      base.tenant.findUnique({ where: { slug }, select: { id: true } }),
+    ])
+    if (emailTaken) return { ok: false, error: 'That email is already registered', field: 'email' }
+    if (slugTaken) return { ok: false, error: 'That subdomain is taken', field: 'slug' }
 
-  const passwordHash = await bcrypt.hash(data.password, 10)
-  const trialEndsAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000)
+    const passwordHash = await bcrypt.hash(data.password, 10)
+    const trialEndsAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000)
 
-  await base.$transaction(async (tx) => {
-    const tenant = await tx.tenant.create({
-      data: { slug, name: data.storeName, trialEndsAt },
+    await base.$transaction(async (tx) => {
+      const tenant = await tx.tenant.create({
+        data: { slug, name: data.storeName, trialEndsAt },
+      })
+      const user = await tx.user.create({
+        data: { email: data.email, name: data.name, password: passwordHash, role: 'ADMIN' },
+      })
+      await tx.tenantMember.create({
+        data: { tenantId: tenant.id, userId: user.id, role: 'OWNER' },
+      })
+      await tx.seoSettings.create({
+        data: { tenantId: tenant.id, siteName: data.storeName },
+      })
     })
-    const user = await tx.user.create({
-      data: { email: data.email, name: data.name, password: passwordHash, role: 'ADMIN' },
-    })
-    await tx.tenantMember.create({
-      data: { tenantId: tenant.id, userId: user.id, role: 'OWNER' },
-    })
-    await tx.seoSettings.create({
-      data: { tenantId: tenant.id, siteName: data.storeName },
-    })
-  })
+  } catch (err: any) {
+    console.error('[signup] error', err)
+    return {
+      ok: false,
+      error: `Signup failed: ${err?.code ?? ''} ${err?.message ?? String(err)}`.slice(0, 500),
+    }
+  }
 
   // Point subsequent requests at the new tenant until real Host-based
   // routing is live. Middleware forwards this as x-tenant-slug.
