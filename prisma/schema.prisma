@@ -124,6 +124,21 @@ model Tenant {
 
   members TenantMember[]
 
+  categories            Category[]
+  products              Product[]
+  carts                 Cart[]
+  orders                Order[]
+  coupons               Coupon[]
+  popups                Popup[]
+  newsletterSubscribers NewsletterSubscriber[]
+  newsletterCampaigns   NewsletterCampaign[]
+  reviews               Review[]
+  wishlistItems         Wishlist[]
+  customers             Customer[]
+  seoSettings           SeoSettings[]
+  supportTickets        SupportTicket[]
+  inventoryAlerts       InventoryAlert[]
+
   @@index([status])
 }
 
@@ -165,6 +180,11 @@ model Category {
   parent   Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
   children Category[] @relation("CategoryHierarchy")
   products Product[]
+
+  tenantId String?
+  tenant   Tenant? @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
 }
 
 // Product Models
@@ -195,9 +215,13 @@ model Product {
   reviews         Review[]
   inventoryAlerts InventoryAlert[]
 
+  tenantId String?
+  tenant   Tenant? @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
   @@index([slug])
   @@index([categoryId])
   @@index([status])
+  @@index([tenantId])
 }
 
 model ProductOption {
@@ -275,6 +299,11 @@ model Coupon {
   updatedAt      DateTime   @updatedAt
 
   orders Order[]
+
+  tenantId String?
+  tenant   Tenant? @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
 }
 
 // Cart Models
@@ -287,6 +316,11 @@ model Cart {
 
   user  User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
   items CartItem[]
+
+  tenantId String?
+  tenant   Tenant? @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
 }
 
 model CartItem {
@@ -323,6 +357,11 @@ model Customer {
   reviews        Review[]
   reviewVotes    ReviewVote[]
   supportTickets SupportTicket[]
+
+  tenantId String?
+  tenant   Tenant? @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
 }
 
 model Address {
@@ -381,6 +420,11 @@ model Order {
   coupon   Coupon?     @relation(fields: [couponId], references: [id])
   items    OrderItem[]
   reviews  Review[]
+
+  tenantId String?
+  tenant   Tenant? @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
 }
 
 model OrderItem {
@@ -410,8 +454,12 @@ model Wishlist {
   customer Customer? @relation(fields: [customerId], references: [id], onDelete: Cascade)
   product  Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
 
+  tenantId String?
+  tenant   Tenant? @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
   @@unique([userId, productId])
   @@unique([customerId, productId])
+  @@index([tenantId])
 }
 
 // Review Model
@@ -437,8 +485,12 @@ model Review {
   media    ReviewMedia[]
   votes    ReviewVote[]
 
+  tenantId String?
+  tenant   Tenant? @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
   @@unique([productId, userId])
   @@unique([productId, customerId])
+  @@index([tenantId])
 }
 
 // Review Media (photos/videos)
@@ -483,8 +535,12 @@ model NewsletterSubscriber {
   unsubscribedAt   DateTime?
   lastEmailSent    DateTime?
 
+  tenantId String?
+  tenant   Tenant? @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
   @@index([email])
   @@index([isActive])
+  @@index([tenantId])
 }
 
 // Newsletter Campaign Model
@@ -505,6 +561,11 @@ model NewsletterCampaign {
 
   userId String?
   user   User?   @relation(fields: [userId], references: [id])
+
+  tenantId String?
+  tenant   Tenant? @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
 }
 
 // Inventory Alert Model
@@ -523,10 +584,14 @@ model InventoryAlert {
   product Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
   variant Variant? @relation(fields: [variantId], references: [id], onDelete: Cascade)
 
+  tenantId String?
+  tenant   Tenant? @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
   // Either product or variant must be set, but not both
   @@index([productId])
   @@index([variantId])
   @@index([isActive])
+  @@index([tenantId])
 }
 
 // Support Ticket Models
@@ -562,11 +627,15 @@ model SupportTicket {
   assignedTo User?            @relation("TicketAssignment", fields: [assignedToId], references: [id])
   messages   SupportMessage[]
 
+  tenantId String?
+  tenant   Tenant? @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
   @@index([status])
   @@index([priority])
   @@index([category])
   @@index([customerEmail])
   @@index([createdAt])
+  @@index([tenantId])
 }
 
 model SupportMessage {
@@ -610,6 +679,11 @@ model Popup {
   clicks      Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  tenantId String?
+  tenant   Tenant? @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
 }
 
 // SEO Settings Model
@@ -637,4 +711,7 @@ model SeoSettings {
   timezone           String   @default("Africa/Cairo")
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
+
+  tenantId String? @unique
+  tenant   Tenant? @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 }

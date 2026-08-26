@@ -40,9 +40,11 @@ Nothing multi-tenant exists today. This is the ordered path:
 - ✅ Add `Tenant` (id, slug, plan, status, customDomain, trialEndsAt, createdAt).
 - ✅ Add `TenantMember` (tenantId, userId, role: OWNER/ADMIN/STAFF).
 - ✅ `getTenant()` helper resolves per-request from Host or `x-tenant-slug`.
-- Add `tenantId` to every business model: `Category`, `Product`, `Variant`, `Cart`, `Order`, `Coupon`, `Popup`, `Newsletter*`, `Review*`, `SupportTicket`, `Address`, `Wishlist`, `Media`, `SeoSettings`, `InventoryAlert`.
-- Convert every `@unique` on `slug`/`code`/`sku` to composite `(tenantId, x)`.
-- Migration = one big backfill: create a default tenant, assign all existing rows.
+- ✅ Nullable `tenantId` added to root business models: `Category`, `Product`, `Cart`, `Order`, `Coupon`, `Popup`, `NewsletterSubscriber`, `NewsletterCampaign`, `Review`, `Wishlist`, `Customer`, `SupportTicket`, `InventoryAlert`, `SeoSettings` (unique).
+- ✅ `tenantScope()`/`getTenantId()` helpers spread into Prisma `where` clauses; default tenant auto-provisions on first read.
+- Next: backfill legacy rows to the default tenant, then flip `tenantId` to NOT NULL.
+- Convert single-column `@unique` on `slug`/`code`/`sku`/`email` to composite `(tenantId, x)` (blocked on NOT NULL flip).
+- Wire `tenantScope()` into every route handler and server action (route-by-route pass).
 
 ### 2.2 Tenant resolution
 - Add [src/middleware.ts](src/middleware.ts) that reads `Host` header:
