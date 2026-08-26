@@ -40,7 +40,7 @@ export default function StorelyLanding() {
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <Button asChild size="lg" className="bg-slate-900 hover:bg-slate-800 h-12 px-6">
-                <Link href="/pricing">
+                <Link href="/signup">
                   Start 14-day free trial <ArrowRight className="ml-2 w-4 h-4" />
                 </Link>
               </Button>

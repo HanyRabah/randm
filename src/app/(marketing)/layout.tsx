@@ -17,11 +17,11 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
             <Link href="/" className="hover:text-slate-900">Live demo</Link>
           </nav>
           <div className="flex items-center gap-3">
-            <Link href="/auth/customer-signin" className="text-sm text-slate-600 hover:text-slate-900 hidden sm:inline">
+            <Link href="/auth/signin" className="text-sm text-slate-600 hover:text-slate-900 hidden sm:inline">
               Sign in
             </Link>
             <Button asChild size="sm" className="bg-slate-900 hover:bg-slate-800">
-              <Link href="/pricing">Start free</Link>
+              <Link href="/signup">Start free</Link>
             </Button>
           </div>
         </div>

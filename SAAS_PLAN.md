@@ -54,9 +54,11 @@ Nothing multi-tenant exists today. This is the ordered path:
 - Every Prisma query in `src/app/api/**` and `src/server/**` gets scoped by that id. Best done via a `prismaForTenant(tenantId)` extension so you can't forget.
 
 ### 2.3 Onboarding flow
-- `/signup` → create User + Tenant + TenantMember(OWNER) + default categories/SeoSettings.
-- Subdomain picker with availability check.
-- Optional: seed sample products from a template.
+- ✅ `/signup` — form (store name, subdomain w/ live availability check, name/email/password).
+- ✅ `signup()` server action — transactionally creates User(role=ADMIN) + Tenant(TRIAL, +14d) + TenantMember(OWNER) + SeoSettings row.
+- ✅ Auto sign-in on submit; `/onboarding` welcome page with next-step checklist.
+- ✅ `middleware.ts` bridges `?tenant=<slug>` and `storely_tenant` cookie into the `x-tenant-slug` header so the Prisma extension resolves the new merchant's data even without real Host routing yet.
+- Skipped: seeding sample categories/products from a template (add when merchants ask for it).
 
 ### 2.4 Billing
 - Stripe Billing. Plans: Free (trial), Starter, Pro, Scale.

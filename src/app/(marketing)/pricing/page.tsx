@@ -28,7 +28,7 @@ const PLANS: Plan[] = [
     cadence: '14-day trial, then $29/mo',
     tagline: 'Everything you need to open the store.',
     cta: 'Start free trial',
-    ctaHref: '/auth/customer-signin',
+    ctaHref: '/signup',
     features: [
       'Up to 100 products',
       '500 orders / month',
@@ -45,7 +45,7 @@ const PLANS: Plan[] = [
     cadence: 'per month',
     tagline: 'For shops taking off.',
     cta: 'Start Growth trial',
-    ctaHref: '/auth/customer-signin',
+    ctaHref: '/signup',
     highlight: true,
     features: [
       'Unlimited products',
@@ -294,7 +294,7 @@ export default function PricingPage() {
             No card. No transaction fees. Cancel anytime — take your data with you.
           </p>
           <Button asChild size="lg" className="bg-white text-slate-900 hover:bg-slate-100 h-12 px-6">
-            <Link href="/auth/customer-signin">
+            <Link href="/signup">
               Start free trial <ArrowRight className="ml-2 w-4 h-4" />
             </Link>
           </Button>
