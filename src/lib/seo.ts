@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import { cache } from 'react'
 import { db } from '@/lib/db'
 
 export interface SEOData {
@@ -30,21 +31,13 @@ export interface SeoSettings {
   language: string
   country: string
   timezone: string
+  primaryColor?: string
+  accentColor?: string
 }
 
-// Cache for SEO settings to avoid repeated database calls
-let cachedSeoSettings: SeoSettings | null = null
-let cacheTimestamp: number = 0
-const CACHE_DURATION = 5 * 60 * 1000 // 5 minutes
-
-export async function getSeoSettings(): Promise<SeoSettings> {
-  const now = Date.now()
-  
-  // Return cached settings if still valid
-  if (cachedSeoSettings && (now - cacheTimestamp) < CACHE_DURATION) {
-    return cachedSeoSettings
-  }
-
+// Per-request cache. Module-level caching would leak the first tenant's
+// settings to every subsequent tenant on the same warm serverless instance.
+export const getSeoSettings = cache(async (): Promise<SeoSettings> => {
   try {
     let settings = await db.seoSettings.findFirst()
     
@@ -67,18 +60,14 @@ export async function getSeoSettings(): Promise<SeoSettings> {
       })
     }
 
-    cachedSeoSettings = settings
-    cacheTimestamp = now
-    return settings
+    return settings as any
   } catch (error) {
     console.error('Failed to fetch SEO settings:', error)
-    
-    // Return fallback settings
     return {
       siteName: 'My Store',
-      siteDescription: 'Premium furniture and home decor with Cash on Delivery',
-      siteKeywords: ['furniture', 'home decor', 'cash on delivery', 'Egypt'],
-      siteUrl: 'https://rmstore.com',
+      siteDescription: '',
+      siteKeywords: [],
+      siteUrl: '',
       logoUrl: null,
       faviconUrl: null,
       ogImageUrl: null,
@@ -90,14 +79,16 @@ export async function getSeoSettings(): Promise<SeoSettings> {
       googleTagManagerId: null,
       facebookPixelId: null,
       metaRobots: 'index, follow',
-      currency: 'EGP',
-      currencySymbol: 'EGP',
-      language: 'ar',
-      country: 'Egypt',
-      timezone: 'Africa/Cairo',
+      currency: 'USD',
+      currencySymbol: '$',
+      language: 'en',
+      country: 'United States',
+      timezone: 'UTC',
+      primaryColor: '#111827',
+      accentColor: '#4f46e5',
     }
   }
-}
+})
 
 export async function generateMetadata({
   title,
