@@ -100,6 +100,11 @@ export async function checkSlug(slug: string): Promise<{ available: boolean; rea
     return { available: false, reason: 'Invalid format' }
   }
   if (RESERVED_SLUGS.has(s)) return { available: false, reason: 'Reserved' }
-  const taken = await base.tenant.findUnique({ where: { slug: s }, select: { id: true } })
-  return taken ? { available: false, reason: 'Taken' } : { available: true }
+  try {
+    const taken = await base.tenant.findUnique({ where: { slug: s }, select: { id: true } })
+    return taken ? { available: false, reason: 'Taken' } : { available: true }
+  } catch (err: any) {
+    console.error('[checkSlug] error', err)
+    return { available: false, reason: `err:${err?.code ?? ''} ${err?.message ?? String(err)}`.slice(0, 200) }
+  }
 }
