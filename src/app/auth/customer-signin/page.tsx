@@ -1,7 +1,7 @@
 'use client'
 export const dynamic = 'force-dynamic'
 
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import { signIn, getSession } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
@@ -13,6 +13,14 @@ import { Loader2, User, Mail, Lock, ShoppingBag } from 'lucide-react'
 import Link from 'next/link'
 
 export default function CustomerSignInPage() {
+  return (
+    <Suspense fallback={null}>
+      <CustomerSignInInner />
+    </Suspense>
+  )
+}
+
+function CustomerSignInInner() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
