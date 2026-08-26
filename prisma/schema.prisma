@@ -115,7 +115,8 @@ model Tenant {
   id           String       @id @default(cuid())
   slug         String       @unique // used as <slug>.storely.app
   name         String
-  customDomain String?      @unique
+  customDomain            String?      @unique
+  customDomainVerifiedAt  DateTime?
   plan         TenantPlan   @default(TRIAL)
   status       TenantStatus @default(ACTIVE)
   trialEndsAt  DateTime?

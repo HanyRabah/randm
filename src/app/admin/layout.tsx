@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import Link from 'next/link'
-import { Home, ShoppingCart, Package, Percent, Settings, Users, Activity, AlertTriangle, Mail, MessageCircle } from 'lucide-react'
+import { Home, ShoppingCart, Package, Percent, Settings, Users, Activity, AlertTriangle, Mail, MessageCircle, Globe } from 'lucide-react'
 import { getTenant } from '@/lib/tenant'
 import { db } from '@/lib/db'
 
@@ -106,6 +106,13 @@ export default async function AdminLayout({
           >
             <Settings className="h-4 w-4" />
             SEO Settings
+          </Link>
+          <Link
+            href="/admin/domain"
+            className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+          >
+            <Globe className="h-4 w-4" />
+            Custom Domain
           </Link>
           <Link
             href="/admin/performance"

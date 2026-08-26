@@ -76,8 +76,11 @@ Nothing multi-tenant exists today. This is the ordered path:
 - Move `SeoSettings` fields (brand name, currency, locale, timezone, logo, primary color) to `Tenant` so every store rebrands trivially.
 
 ### 2.6 Custom domains
-- Vercel Domains API (add/verify) — one call at plan upgrade.
-- Store `customDomain` + `customDomainVerifiedAt` on `Tenant`.
+- ✅ `src/lib/vercel-domains.ts` — thin wrapper over the Vercel Project Domains API (`add`, `get`, `remove`).
+- ✅ `src/server/actions/domain.ts` — OWNER/ADMIN-gated `attachDomain` / `checkDomain` / `detachDomain`. Records saved on `Tenant.customDomain` + `Tenant.customDomainVerifiedAt`.
+- ✅ `/admin/domain` — merchant-facing UI: input, verification chip, DNS instructions (A 76.76.21.21 or CNAME cname.vercel-dns.com), status recheck, remove.
+- Setup on Vercel: add `VERCEL_API_TOKEN`, `VERCEL_PROJECT_ID`, `VERCEL_TEAM_ID` env vars.
+- Extension already resolves `Tenant.customDomain` → tenant on request, so once DNS points at Vercel and the record is added, the merchant's admin + storefront serve from their domain.
 
 ---
 
