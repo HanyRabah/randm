@@ -78,7 +78,7 @@ export default function AboutPage() {
               </div>
               <div className="space-y-4 text-lg text-gray-600 leading-relaxed">
                 <p>
-                  Founded in 2020, Rana began as a small family business with a simple mission: 
+                  Founded in 2020, we began as a small family business with a simple mission:
                   to make high-quality furniture accessible to everyone. What started in a small warehouse 
                   has grown into a trusted online destination for furniture lovers across the region.
                 </p>

@@ -57,7 +57,7 @@ export default async function OnboardingPage() {
           Import a CSV or create products with variants (color, size, price).
         </Step>
         <Step n={3} icon={Truck} title="Set up your courier" href="/admin/orders">
-          Rana ships with Bosta/Aramex CSV export. Configure it before your first order.
+          Storely ships with Bosta/Aramex CSV export. Configure it before your first order.
         </Step>
       </ol>
 

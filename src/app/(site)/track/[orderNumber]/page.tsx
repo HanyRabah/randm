@@ -17,7 +17,7 @@ interface OrderTrackingPageProps {
 
 export async function generateMetadata({ params }: OrderTrackingPageProps): Promise<Metadata> {
   return {
-    title: `Track Order ${params.orderNumber} | Rana`,
+    title: `Track Order ${params.orderNumber}`,
     description: `Track your order ${params.orderNumber} and see real-time delivery status.`,
   }
 }

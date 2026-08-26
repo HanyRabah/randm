@@ -72,7 +72,7 @@ function CustomerSignInInner() {
               Welcome Back
             </CardTitle>
             <CardDescription className="text-gray-600">
-              Sign in to your Rana account to continue shopping
+              Sign in to your account to continue shopping
             </CardDescription>
           </CardHeader>
           

@@ -8,7 +8,7 @@ import { generateMetadata as generateSeoMetadata } from '@/lib/seo'
 export async function generateMetadata(): Promise<Metadata> {
   return await generateSeoMetadata({
     title: 'Shipping & Returns - Delivery Information',
-    description: 'Learn about Rana shipping options, delivery times, return policy, and exchange procedures. Fast delivery and hassle-free returns.',
+    description: 'Learn about our shipping options, delivery times, return policy, and exchange procedures. Fast delivery and hassle-free returns.',
     url: '/shipping-returns',
   })
 }

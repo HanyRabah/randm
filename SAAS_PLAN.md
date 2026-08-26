@@ -83,7 +83,7 @@ Nothing multi-tenant exists today. This is the ordered path:
 
 You need three new public pages on the apex `storely.app` (separate route group from the storefront):
 
-1. **Landing** (`/`) — hero, "what is Rana", 3 feature blocks (COD-ready, mobile-first admin, no-code storefront), social proof placeholder, CTA to `/signup`.
+1. **Landing** (`/`) — hero, "what is Storely", 3 feature blocks (COD-ready, mobile-first admin, no-code storefront), social proof placeholder, CTA to `/signup`.
 2. **Pricing** (`/pricing`) — plan cards (Free / Starter / Pro / Scale), feature matrix, FAQ, CTA per card.
 3. **Product / features tour** (`/features`) — screenshots of admin + storefront, walkthroughs (products, orders, coupons, popups, COD collection).
 

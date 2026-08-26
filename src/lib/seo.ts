@@ -52,7 +52,7 @@ export async function getSeoSettings(): Promise<SeoSettings> {
     if (!settings) {
       settings = await db.seoSettings.create({
         data: {
-          siteName: 'Rana',
+          siteName: 'My Store',
           siteDescription: 'Premium furniture and home decor with Cash on Delivery',
           siteKeywords: ['furniture', 'home decor', 'cash on delivery', 'Egypt'],
           siteUrl: 'https://rmstore.com',
@@ -74,7 +74,7 @@ export async function getSeoSettings(): Promise<SeoSettings> {
     
     // Return fallback settings
     return {
-      siteName: 'Rana',
+      siteName: 'My Store',
       siteDescription: 'Premium furniture and home decor with Cash on Delivery',
       siteKeywords: ['furniture', 'home decor', 'cash on delivery', 'Egypt'],
       siteUrl: 'https://rmstore.com',
