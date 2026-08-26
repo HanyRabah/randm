@@ -70,18 +70,20 @@ export async function createOrder(formData: FormData) {
     }
 
     // Create or get customer
-    let customer = await db.customer.findUnique({
+    // ponytail: findFirst — email is composite unique (tenantId,email); extension scopes tenantId
+    let customer = await db.customer.findFirst({
       where: { email: validatedData.email },
     })
 
     if (!customer) {
+      // ponytail: tenantId auto-injected by db.ts extension
       customer = await db.customer.create({
         data: {
           email: validatedData.email,
           phone: validatedData.phone,
           firstName: validatedData.firstName,
           lastName: validatedData.lastName,
-        },
+        } as any,
       })
     }
 
@@ -105,6 +107,7 @@ export async function createOrder(formData: FormData) {
     const orderNumber = `COD-${new Date().getFullYear()}-${String(Date.now()).slice(-6)}`
 
     // Create order
+    // ponytail: tenantId auto-injected by db.ts extension
     const order = await db.order.create({
       data: {
         orderNumber,
@@ -120,7 +123,7 @@ export async function createOrder(formData: FormData) {
         contactPhone: validatedData.phone,
         otpVerified: !requireOTP, // If OTP not required, mark as verified
         codCollected: false,
-      },
+      } as any,
     })
 
     // Create order items and update inventory

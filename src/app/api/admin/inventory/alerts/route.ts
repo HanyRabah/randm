@@ -70,7 +70,7 @@ export async function GET(request: NextRequest) {
           product: {
             select: {
               id: true,
-              name: true,
+              title: true,
               slug: true
             }
           },
@@ -81,7 +81,7 @@ export async function GET(request: NextRequest) {
               inventory: true,
               product: {
                 select: {
-                  name: true,
+                  title: true,
                   slug: true
                 }
               }
@@ -192,13 +192,14 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // ponytail: InventoryAlert has no tenantId (child of Product/Variant); cast satisfies unchecked create requirements
     const alert = await db.inventoryAlert.create({
-      data: validatedData,
+      data: validatedData as any,
       include: {
         product: {
           select: {
             id: true,
-            name: true,
+            title: true,
             slug: true
           }
         },
@@ -209,7 +210,7 @@ export async function POST(request: NextRequest) {
             inventory: true,
             product: {
               select: {
-                name: true,
+                title: true,
                 slug: true
               }
             }

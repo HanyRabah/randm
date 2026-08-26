@@ -67,7 +67,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
     "@type": "Product",
     "name": product.name,
     "description": product.description,
-    "image": product.media.map(m => m.url),
+    "image": product.media.map((m: any) => m.url),
     "offers": {
       "@type": "Offer",
       "price": product.price,

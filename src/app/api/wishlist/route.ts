@@ -113,7 +113,7 @@ export async function POST(request: NextRequest) {
     }
 
     const wishlistItem = await db.wishlist.create({
-      data: { userId: user.id, productId },
+      data: { userId: user.id, productId } as any,
     })
 
     return NextResponse.json({

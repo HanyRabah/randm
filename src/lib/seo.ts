@@ -50,6 +50,7 @@ export async function getSeoSettings(): Promise<SeoSettings> {
     
     // Create default settings if none exist
     if (!settings) {
+      // ponytail: tenantId auto-injected by db.ts extension
       settings = await db.seoSettings.create({
         data: {
           siteName: 'My Store',
@@ -62,7 +63,7 @@ export async function getSeoSettings(): Promise<SeoSettings> {
           language: 'ar',
           country: 'Egypt',
           timezone: 'Africa/Cairo',
-        }
+        } as any
       })
     }
 

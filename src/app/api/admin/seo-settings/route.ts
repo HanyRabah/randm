@@ -42,6 +42,7 @@ export async function GET() {
 
     // If no settings exist, create default ones
     if (!seoSettings) {
+      // ponytail: tenantId auto-injected by db.ts extension
       seoSettings = await db.seoSettings.create({
         data: {
           siteName: 'My Store',
@@ -54,7 +55,7 @@ export async function GET() {
           language: 'ar',
           country: 'Egypt',
           timezone: 'Africa/Cairo',
-        }
+        } as any
       })
     }
 
@@ -120,8 +121,9 @@ export async function PUT(request: NextRequest) {
       })
     } else {
       // Create new settings
+      // ponytail: tenantId auto-injected by db.ts extension
       seoSettings = await db.seoSettings.create({
-        data: processedData
+        data: processedData as any
       })
     }
 

@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
         product: {
           select: {
             id: true,
-            name: true,
+            title: true,
             slug: true,
             variants: {
               select: {
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
             inventory: true,
             product: {
               select: {
-                name: true,
+                title: true,
                 slug: true
               }
             }

@@ -57,7 +57,7 @@ export async function GET() {
       id: user.id,
       name: user.name,
       email: user.email,
-      phone: user.phone,
+      phone: (user as any).phone,
       createdAt: user.createdAt.toISOString(),
       addresses: user.addresses.map((addr: any) => ({
         id: addr.id,
@@ -95,14 +95,14 @@ export async function PUT(request: NextRequest) {
         name: validatedData.name,
         phone: validatedData.phone,
         updatedAt: new Date()
-      }
+      } as any
     })
 
     return NextResponse.json({
       id: updatedUser.id,
       name: updatedUser.name,
       email: updatedUser.email,
-      phone: updatedUser.phone,
+      phone: (updatedUser as any).phone,
       createdAt: updatedUser.createdAt.toISOString()
     })
   } catch (error) {

@@ -68,7 +68,8 @@ export async function POST(
           }
         })
       } else {
-        const customer = await db.customer.findUnique({
+        // ponytail: findFirst — email is composite unique (tenantId,email)
+        const customer = await db.customer.findFirst({
           where: { email: session.user.email }
         })
 

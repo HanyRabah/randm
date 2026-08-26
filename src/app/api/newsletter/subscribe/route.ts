@@ -20,7 +20,8 @@ export async function POST(request: NextRequest) {
     const { email, firstName, lastName, preferences, source } = subscribeSchema.parse(body)
 
     // Check if email already exists
-    const existingSubscriber = await db.newsletterSubscriber.findUnique({
+    // ponytail: findFirst — email is composite unique (tenantId,email); extension scopes tenantId
+    const existingSubscriber = await db.newsletterSubscriber.findFirst({
       where: { email }
     })
 
@@ -33,12 +34,12 @@ export async function POST(request: NextRequest) {
       } else {
         // Reactivate existing subscriber
         const reactivatedSubscriber = await db.newsletterSubscriber.update({
-          where: { email },
+          where: { id: existingSubscriber.id },
           data: {
             isActive: true,
             firstName: firstName || existingSubscriber.firstName,
             lastName: lastName || existingSubscriber.lastName,
-            preferences: preferences || existingSubscriber.preferences,
+            preferences: (preferences || existingSubscriber.preferences) as any,
             source: source || existingSubscriber.source,
             subscribedAt: new Date(),
             unsubscribedAt: null
@@ -64,9 +65,9 @@ export async function POST(request: NextRequest) {
         email,
         firstName: firstName || null,
         lastName: lastName || null,
-        preferences: preferences || null,
+        preferences: (preferences || undefined) as any,
         source: source || 'direct'
-      }
+      } as any
     })
 
     // TODO: Send welcome email here

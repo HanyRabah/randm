@@ -27,7 +27,7 @@ export async function GET(
         product: {
           select: {
             id: true,
-            name: true,
+            title: true,
             slug: true
           }
         },
@@ -38,7 +38,7 @@ export async function GET(
             inventory: true,
             product: {
               select: {
-                name: true,
+                title: true,
                 slug: true
               }
             }
@@ -105,7 +105,7 @@ export async function PUT(
         product: {
           select: {
             id: true,
-            name: true,
+            title: true,
             slug: true
           }
         },
@@ -116,7 +116,7 @@ export async function PUT(
             inventory: true,
             product: {
               select: {
-                name: true,
+                title: true,
                 slug: true
               }
             }

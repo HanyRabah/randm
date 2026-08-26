@@ -32,8 +32,7 @@ export async function GET() {
       include: {
         addresses: {
           orderBy: [
-            { isDefault: 'desc' },
-            { createdAt: 'desc' }
+            { isDefault: 'desc' }
           ]
         }
       }

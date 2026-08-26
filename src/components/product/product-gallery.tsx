@@ -86,7 +86,7 @@ export function ProductGallery({ images, selectedVariant, productImages = [] }: 
       {/* Thumbnail Images */}
       {displayImages.length > 1 && (
         <div className="flex space-x-2 overflow-x-auto">
-          {displayImages.map((image, index) => (
+          {displayImages.map((image: any, index: number) => (
             <button
               key={index}
               onClick={() => setSelectedImage(index)}

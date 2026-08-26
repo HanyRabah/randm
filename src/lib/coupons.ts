@@ -19,7 +19,8 @@ export async function validateCoupon(
   subtotal: number,
   customerIdentifier?: string
 ): Promise<CouponValidationResult> {
-  const coupon = await db.coupon.findUnique({
+  // ponytail: findFirst — code is composite unique (tenantId,code); extension scopes tenantId
+  const coupon = await db.coupon.findFirst({
     where: { code: code.toUpperCase() },
   })
 

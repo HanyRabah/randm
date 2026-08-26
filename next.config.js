@@ -1,8 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // ponytail: portfolio demo — TS + ESLint errors accepted on non-demo
-  // routes (see TECH_DEBT.md); remove once legacy issues are cleaned up.
-  typescript: { ignoreBuildErrors: true },
+  // TypeScript is checked at build time. ESLint stays skipped in build
+  // because the legacy rule surface hasn't been cleaned yet — run
+  // `pnpm lint` locally / in CI.
   eslint: { ignoreDuringBuilds: true },
   experimental: {
     serverComponentsExternalPackages: ['@prisma/client'],

@@ -34,7 +34,8 @@ export async function GET(
     } = reviewsQuerySchema.parse(queryParams)
 
     // Get product by slug first
-    const product = await db.product.findUnique({
+    // ponytail: findFirst — slug is composite unique (tenantId,slug); extension scopes tenantId
+    const product = await db.product.findFirst({
       where: { slug: params.slug },
       select: { id: true }
     })
@@ -193,12 +194,13 @@ export async function POST(
     const { rating, title, comment, orderId } = createReviewSchema.parse(body)
 
     // Check if product exists
-    const product = await db.product.findUnique({
+    // ponytail: findFirst — slug is composite unique; status enum replaced isActive bool
+    const product = await db.product.findFirst({
       where: { slug: params.slug },
-      select: { id: true, name: true, isActive: true }
+      select: { id: true, title: true, status: true }
     })
 
-    if (!product || !product.isActive) {
+    if (!product || product.status !== 'PUBLISHED') {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 })
     }
 
@@ -247,6 +249,7 @@ export async function POST(
     let review
     if (user) {
       // For authenticated users
+      // ponytail: Review has no tenantId (child of Product); cast satisfies unchecked create
       review = await db.review.create({
         data: {
           productId: product.id,
@@ -257,11 +260,12 @@ export async function POST(
           comment: comment || null,
           isVerified,
           isApproved: true // Auto-approve for now, can add moderation later
-        }
+        } as any
       })
     } else {
       // For customers (guest checkout users)
-      const customer = await db.customer.findUnique({
+      // ponytail: findFirst — email is composite unique (tenantId,email)
+      const customer = await db.customer.findFirst({
         where: { email: session.user.email }
       })
 
@@ -276,7 +280,7 @@ export async function POST(
             comment: comment || null,
             isVerified,
             isApproved: true
-          }
+          } as any
         })
       } else {
         return NextResponse.json({ error: 'Customer not found' }, { status: 404 })

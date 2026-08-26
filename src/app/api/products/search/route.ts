@@ -171,15 +171,15 @@ export async function GET(request: NextRequest) {
     // Get filter options for faceted search
     const [categories, availableColors, availableMaterials, availableSizes] = await Promise.all([
       db.category.findMany({
-        where: { status: 'ACTIVE' },
+        where: { isActive: true },
         select: { name: true, slug: true, _count: { select: { products: true } } },
         orderBy: { name: 'asc' }
       }),
       db.optionValue.findMany({
         where: {
           option: { name: 'Color' },
-          variant: {
-            product: { status: 'ACTIVE' }
+          variants: {
+            some: { product: { status: 'PUBLISHED' } }
           }
         },
         select: { value: true },
@@ -189,8 +189,8 @@ export async function GET(request: NextRequest) {
       db.optionValue.findMany({
         where: {
           option: { name: 'Material' },
-          variant: {
-            product: { status: 'ACTIVE' }
+          variants: {
+            some: { product: { status: 'PUBLISHED' } }
           }
         },
         select: { value: true },
@@ -200,8 +200,8 @@ export async function GET(request: NextRequest) {
       db.optionValue.findMany({
         where: {
           option: { name: 'Size' },
-          variant: {
-            product: { status: 'ACTIVE' }
+          variants: {
+            some: { product: { status: 'PUBLISHED' } }
           }
         },
         select: { value: true },

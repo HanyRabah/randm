@@ -91,9 +91,9 @@ export default async function OrderPage({ params }: OrderPageProps) {
     createdAt: order.createdAt.toISOString(),
     updatedAt: order.updatedAt.toISOString(),
     address: order.address ? {
-      street: order.address.street,
+      street: order.address.line1,
       city: order.address.city,
-      governorate: order.address.governorate
+      governorate: order.address.state
     } : undefined,
     total: Number(order.total),
     subtotal: Number(order.subtotal),
@@ -168,7 +168,7 @@ export default async function OrderPage({ params }: OrderPageProps) {
                   <span className="ml-3 text-gray-600">Loading order status...</span>
                 </div>
               }>
-                <OrderStatusTracker order={orderData} />
+                <OrderStatusTracker order={orderData as any} />
               </Suspense>
             </div>
 

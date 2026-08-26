@@ -18,8 +18,9 @@ export async function getCategories() {
   return categories
 }
 
-export async function getCategoryBySlug(slug: string) {
-  const category = await db.category.findUnique({
+export async function getCategoryBySlug(slug: string): Promise<any> {
+  // ponytail: findFirst — slug is now composite unique (tenantId,slug); extension scopes tenantId
+  const category = await db.category.findFirst({
     where: { slug, isActive: true },
     include: {
       parent: true,

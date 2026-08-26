@@ -6,7 +6,8 @@ export async function GET(
   { params }: { params: { slug: string } }
 ) {
   try {
-    const product = await prisma.product.findUnique({
+    // ponytail: findFirst — slug is composite unique (tenantId,slug); extension scopes tenantId
+    const product = await prisma.product.findFirst({
       where: { slug: params.slug },
       include: {
         category: true,

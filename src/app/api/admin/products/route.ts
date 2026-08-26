@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
 
     // Create product with transaction
     const product = await db.$transaction(async (tx) => {
-      // Create the product
+      // ponytail: tenantId auto-injected by db.ts extension (also applies to tx)
       const newProduct = await tx.product.create({
         data: {
           title,
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
           tags,
           seoTitle,
           seoDescription,
-        }
+        } as any
       })
 
       // Create product options
@@ -94,7 +94,7 @@ export async function POST(request: NextRequest) {
         for (const [optionName, optionValue] of Object.entries(variant.options)) {
           const optionValueRecord = await tx.optionValue.findFirst({
             where: {
-              value: optionValue,
+              value: optionValue as string,
               option: {
                 productId: newProduct.id,
                 name: optionName,

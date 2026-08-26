@@ -7,7 +7,7 @@ import { db } from '@/lib/db'
 import { addToCartSchema, updateCartItemSchema } from '@/lib/validations'
 import { revalidatePath } from 'next/cache'
 
-async function getOrCreateCart() {
+async function getOrCreateCart(): Promise<any> {
   const session = await getServerSession(authOptions)
   const cookieStore = cookies()
   let sessionId = cookieStore.get('cart-session')?.value
@@ -88,11 +88,12 @@ async function getOrCreateCart() {
       }
 
       // Create new cart for authenticated user
+      // ponytail: tenantId auto-injected by db.ts extension
       const newCart = await db.cart.create({
-        data: { 
+        data: {
           sessionId,
-          userId: user.id 
-        },
+          userId: user.id,
+        } as any,
         include: includeOptions,
       })
       return newCart
@@ -106,8 +107,9 @@ async function getOrCreateCart() {
   })
 
   if (!cart) {
+    // ponytail: tenantId auto-injected by db.ts extension
     cart = await db.cart.create({
-      data: { sessionId },
+      data: { sessionId } as any,
       include: includeOptions,
     })
   }
@@ -127,8 +129,8 @@ export async function addToCart(formData: FormData) {
     const cart = await getOrCreateCart()
 
     // Check if product exists and is active
-    const product = await db.product.findUnique({
-      where: { id: validatedData.productId, isActive: true },
+    const product = await db.product.findFirst({
+      where: { id: validatedData.productId, status: 'PUBLISHED' },
       include: {
         variants: validatedData.variantId
           ? { where: { id: validatedData.variantId } }

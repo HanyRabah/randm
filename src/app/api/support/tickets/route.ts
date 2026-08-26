@@ -129,8 +129,9 @@ export async function POST(request: NextRequest) {
         userId = (session.user as any).id
       } else {
         // Check if customer exists
-        const customer = await db.customer.findUnique({
-          where: { email: session.user.email }
+        // ponytail: findFirst — email is composite unique (tenantId,email)
+        const customer = await db.customer.findFirst({
+          where: { email: session.user.email as string }
         })
         if (customer) {
           customerId = customer.id
@@ -138,6 +139,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // ponytail: tenantId auto-injected by db.ts extension
     const ticket = await db.supportTicket.create({
       data: {
         ticketNumber,
@@ -150,7 +152,7 @@ export async function POST(request: NextRequest) {
         customerName: validatedData.customerName || session?.user?.name,
         customerEmail: validatedData.customerEmail,
         customerPhone: validatedData.customerPhone
-      },
+      } as any,
       include: {
         assignedTo: {
           select: {

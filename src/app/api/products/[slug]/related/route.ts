@@ -7,7 +7,8 @@ export async function GET(
 ) {
   try {
     // First get the current product to find its category and tags
-    const currentProduct = await prisma.product.findUnique({
+    // ponytail: findFirst — slug is composite unique
+    const currentProduct = await prisma.product.findFirst({
       where: { slug: params.slug },
       select: {
         id: true,

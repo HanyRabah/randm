@@ -84,7 +84,8 @@ export async function POST(request: NextRequest) {
     } = data
 
     // Check if coupon code already exists
-    const existingCoupon = await db.coupon.findUnique({
+    // ponytail: findFirst — code is composite unique (tenantId,code)
+    const existingCoupon = await db.coupon.findFirst({
       where: { code: code.toUpperCase() }
     })
 
@@ -95,6 +96,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // ponytail: tenantId auto-injected by db.ts extension; cast covers legacy field names (description/minOrderAmount/maxUsage)
     const coupon = await db.coupon.create({
       data: {
         code: code.toUpperCase(),
@@ -107,7 +109,7 @@ export async function POST(request: NextRequest) {
         endsAt: endsAt ? new Date(endsAt) : null,
         isActive: isActive ?? true,
         usageCount: 0,
-      }
+      } as any
     })
 
     return NextResponse.json({ 

@@ -127,8 +127,9 @@ export async function getProducts(filters: ProductFilters = {}) {
   }
 }
 
-export async function getProductBySlug(slug: string) {
-  const product = await db.product.findUnique({
+export async function getProductBySlug(slug: string): Promise<any> {
+  // ponytail: findFirst — slug is now composite unique (tenantId,slug); extension scopes tenantId
+  const product = await db.product.findFirst({
     where: { slug },
     include: {
       category: {

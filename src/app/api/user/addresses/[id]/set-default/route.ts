@@ -45,9 +45,8 @@ export async function PUT(
     // Set this address as default
     const updatedAddress = await db.address.update({
       where: { id: params.id },
-      data: { 
-        isDefault: true,
-        updatedAt: new Date()
+      data: {
+        isDefault: true
       }
     })
 
