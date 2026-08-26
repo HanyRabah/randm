@@ -7,12 +7,12 @@ import {
 } from 'lucide-react'
 
 export const metadata = {
-  title: 'Rana — Commerce OS for cash-on-delivery merchants',
+  title: 'Storely — Commerce OS for cash-on-delivery merchants',
   description:
     'Launch a mobile-first storefront, ship orders, and run promotions in one place. Built for MENA merchants selling on cash on delivery.',
 }
 
-export default function RanaLanding() {
+export default function StorelyLanding() {
   return (
     <>
       {/* Hero */}
@@ -76,7 +76,7 @@ export default function RanaLanding() {
             One admin. Every part of the shop.
           </h2>
           <p className="text-lg text-slate-600">
-            Stop stitching plugins. Rana ships with the modules real COD merchants use every
+            Stop stitching plugins. Storely ships with the modules real COD merchants use every
             day — products, orders, promotions, and support.
           </p>
         </div>
@@ -200,7 +200,7 @@ const STEPS = [
 
 const FAQS = [
   { q: 'Do I need to install anything?',
-    a: 'No. Rana is fully hosted. Sign up and start selling on your own subdomain in minutes. Upgrade to a paid plan to connect a custom domain.' },
+    a: 'No. Storely is fully hosted. Sign up and start selling on your own subdomain in minutes. Upgrade to a paid plan to connect a custom domain.' },
   { q: 'Which payment methods are supported?',
     a: 'Cash on delivery is the default. Card and wallet integrations (Paymob, Stripe) are in the roadmap and available on request.' },
   { q: 'Can I export my data?',

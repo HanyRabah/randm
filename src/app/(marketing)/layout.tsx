@@ -6,14 +6,14 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
     <div className="min-h-screen flex flex-col bg-white text-slate-900">
       <header className="sticky top-0 z-40 border-b border-slate-200/70 bg-white/80 backdrop-blur">
         <div className="container mx-auto max-w-7xl px-6 h-16 flex items-center justify-between">
-          <Link href="/rana" className="flex items-center gap-2 font-bold text-lg tracking-tight">
+          <Link href="/storely" className="flex items-center gap-2 font-bold text-lg tracking-tight">
             <span className="inline-block w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-600 to-fuchsia-600" />
-            Rana
+            Storely
           </Link>
           <nav className="hidden md:flex items-center gap-8 text-sm text-slate-600">
-            <a href="/rana#features" className="hover:text-slate-900">Features</a>
+            <a href="/storely#features" className="hover:text-slate-900">Features</a>
             <Link href="/pricing" className="hover:text-slate-900">Pricing</Link>
-            <a href="/rana#faq" className="hover:text-slate-900">FAQ</a>
+            <a href="/storely#faq" className="hover:text-slate-900">FAQ</a>
             <Link href="/" className="hover:text-slate-900">Live demo</Link>
           </nav>
           <div className="flex items-center gap-3">
@@ -34,14 +34,14 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
           <div>
             <div className="flex items-center gap-2 font-bold text-slate-900 mb-3">
               <span className="inline-block w-6 h-6 rounded-md bg-gradient-to-br from-indigo-600 to-fuchsia-600" />
-              Rana
+              Storely
             </div>
             <p>The commerce OS for merchants who sell on cash on delivery.</p>
           </div>
           <div>
             <div className="font-semibold text-slate-900 mb-3">Product</div>
             <ul className="space-y-2">
-              <li><a href="/rana#features" className="hover:text-slate-900">Features</a></li>
+              <li><a href="/storely#features" className="hover:text-slate-900">Features</a></li>
               <li><Link href="/pricing" className="hover:text-slate-900">Pricing</Link></li>
               <li><Link href="/" className="hover:text-slate-900">Live demo</Link></li>
             </ul>
@@ -62,7 +62,7 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
           </div>
         </div>
         <div className="border-t border-slate-200 py-6 text-center text-xs text-slate-500">
-          © {new Date().getFullYear()} Rana. All rights reserved.
+          © {new Date().getFullYear()} Storely. All rights reserved.
         </div>
       </footer>
     </div>

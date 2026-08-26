@@ -1,4 +1,4 @@
-# Rana → SaaS Plan
+# Storely → SaaS Plan
 
 Findings from a full audit of the codebase + staging. Grouped by urgency, not by area, so you can work top-down.
 
@@ -37,17 +37,18 @@ Even without going SaaS, these are missing/weak for a paying merchant:
 Nothing multi-tenant exists today. This is the ordered path:
 
 ### 2.1 Data model
-- Add `Tenant` (id, slug, plan, status, customDomain, createdAt).
-- Add `TenantMember` (tenantId, userId, role: OWNER/ADMIN/STAFF).
+- ✅ Add `Tenant` (id, slug, plan, status, customDomain, trialEndsAt, createdAt).
+- ✅ Add `TenantMember` (tenantId, userId, role: OWNER/ADMIN/STAFF).
+- ✅ `getTenant()` helper resolves per-request from Host or `x-tenant-slug`.
 - Add `tenantId` to every business model: `Category`, `Product`, `Variant`, `Cart`, `Order`, `Coupon`, `Popup`, `Newsletter*`, `Review*`, `SupportTicket`, `Address`, `Wishlist`, `Media`, `SeoSettings`, `InventoryAlert`.
 - Convert every `@unique` on `slug`/`code`/`sku` to composite `(tenantId, x)`.
 - Migration = one big backfill: create a default tenant, assign all existing rows.
 
 ### 2.2 Tenant resolution
 - Add [src/middleware.ts](src/middleware.ts) that reads `Host` header:
-  - `<slug>.rana.app` → resolve tenant by slug
+  - `<slug>.storely.app` → resolve tenant by slug
   - custom domain → resolve tenant by `customDomain`
-  - `rana.app` / `www.rana.app` → marketing site
+  - `storely.app` / `www.storely.app` → marketing site
 - Stash `tenantId` on request via header (`x-tenant-id`) that server components / route handlers read.
 - Every Prisma query in `src/app/api/**` and `src/server/**` gets scoped by that id. Best done via a `prismaForTenant(tenantId)` extension so you can't forget.
 
@@ -74,7 +75,7 @@ Nothing multi-tenant exists today. This is the ordered path:
 
 ## P3 — Marketing / sales surface (the "sell it online" part)
 
-You need three new public pages on the apex `rana.app` (separate route group from the storefront):
+You need three new public pages on the apex `storely.app` (separate route group from the storefront):
 
 1. **Landing** (`/`) — hero, "what is Rana", 3 feature blocks (COD-ready, mobile-first admin, no-code storefront), social proof placeholder, CTA to `/signup`.
 2. **Pricing** (`/pricing`) — plan cards (Free / Starter / Pro / Scale), feature matrix, FAQ, CTA per card.

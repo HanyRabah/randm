@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge'
 import { Check, Minus, Sparkles, Wrench, ArrowRight } from 'lucide-react'
 
 export const metadata = {
-  title: 'Pricing — Rana',
+  title: 'Pricing — Storely',
   description:
     'Simple pricing. Start free, grow as you sell. Plans include storefront, admin, coupons, popups, and courier export.',
 }
@@ -32,7 +32,7 @@ const PLANS: Plan[] = [
     features: [
       'Up to 100 products',
       '500 orders / month',
-      'Rana subdomain (yourstore.rana.app)',
+      'Storely subdomain (yourstore.storely.app)',
       'Cash on delivery + SMS OTP',
       'Coupons & basic popups',
       'Courier CSV export',
@@ -84,7 +84,7 @@ const MATRIX: { section: string; rows: { label: string; starter: string | boolea
     rows: [
       { label: 'Products',       starter: 'Up to 100',     growth: 'Unlimited', scale: 'Unlimited' },
       { label: 'Orders / month', starter: '500',           growth: '5,000',     scale: 'Unlimited' },
-      { label: 'Rana subdomain', starter: true,            growth: true,        scale: true },
+      { label: 'Storely subdomain', starter: true,            growth: true,        scale: true },
       { label: 'Custom domain',  starter: false,           growth: true,        scale: true },
       { label: 'RTL + Arabic',   starter: true,            growth: true,        scale: true },
     ],
@@ -288,7 +288,7 @@ export default function PricingPage() {
       <section className="container mx-auto max-w-7xl px-6 pb-24">
         <div className="rounded-3xl bg-slate-950 text-white p-12 md:p-16 text-center">
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">
-            Try Rana free for 14 days.
+            Try Storely free for 14 days.
           </h2>
           <p className="text-lg text-slate-300 mb-8 max-w-xl mx-auto">
             No card. No transaction fees. Cancel anytime — take your data with you.
