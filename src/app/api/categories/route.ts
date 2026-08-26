@@ -18,10 +18,10 @@ export async function GET() {
     })
 
     return NextResponse.json(categories)
-  } catch (error: any) {
+  } catch (error) {
     console.error('Categories fetch error:', error)
     return NextResponse.json(
-      { error: 'Failed to fetch categories', detail: `${error?.code ?? ''} ${error?.message ?? String(error)}`.slice(0, 500) },
+      { error: 'Failed to fetch categories' },
       { status: 500 }
     )
   }
