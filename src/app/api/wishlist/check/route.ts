@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
       where: {
         productId,
         OR: [
-          { userId: session.user.id },
+          { userId: (session.user as any).id },
           { customer: { email: session.user.email } }
         ]
       }

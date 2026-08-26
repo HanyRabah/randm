@@ -39,7 +39,7 @@ export function TicketList() {
   const fetchTickets = async () => {
     try {
       const params = new URLSearchParams()
-      if (statusFilter) params.append('status', statusFilter)
+      if (statusFilter && statusFilter !== 'all') params.append('status', statusFilter)
 
       const response = await fetch(`/api/support/tickets?${params}`)
       if (response.ok) {
@@ -135,14 +135,14 @@ export function TicketList() {
         <CardContent className="pt-6">
           <div className="flex space-x-4">
             <Select
-              value={statusFilter}
-              onValueChange={setStatusFilter}
+              value={statusFilter || undefined}
+              onValueChange={(value) => setStatusFilter(value || '')}
             >
               <SelectTrigger className="w-48">
                 <SelectValue placeholder="All statuses" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All statuses</SelectItem>
+                <SelectItem value="all">All statuses</SelectItem>
                 <SelectItem value="OPEN">Open</SelectItem>
                 <SelectItem value="IN_PROGRESS">In Progress</SelectItem>
                 <SelectItem value="RESOLVED">Resolved</SelectItem>

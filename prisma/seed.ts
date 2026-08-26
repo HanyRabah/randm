@@ -103,12 +103,12 @@ async function main() {
   // 1. Modern Coffee Table with Color and Size options
   const coffeeTable = await db.product.create({
     data: {
-      name: 'Modern Glass Coffee Table',
+      title: 'Modern Glass Coffee Table',
       slug: 'modern-glass-coffee-table',
       description: 'Elegant glass coffee table with chrome legs. Perfect centerpiece for modern living rooms.',
-      isActive: true,
+      status: 'PUBLISHED',
       categoryId: categories[0].id,
-      price: 8999.00,
+      basePrice: 8999.00,
       comparePrice: 12399.00,
       weight: 25.5,
       tags: ['modern', 'glass', 'chrome', 'living room'],
@@ -335,12 +335,12 @@ async function main() {
   // 2. Ergonomic Office Chair with Color and Material options
   const officeChair = await db.product.create({
     data: {
-      name: 'Ergonomic Office Chair',
+      title: 'Ergonomic Office Chair',
       slug: 'ergonomic-office-chair',
       description: 'Premium ergonomic office chair with lumbar support and adjustable height. Perfect for long work sessions.',
-      isActive: true,
+      status: 'PUBLISHED',
       categoryId: categories[2].id,
-      price: 6199.00,
+      basePrice: 6199.00,
       comparePrice: 9299.00,
       weight: 18.0,
       tags: ['ergonomic', 'office', 'adjustable', 'lumbar support'],
@@ -595,12 +595,12 @@ async function main() {
   // 3. Simple product without variants (Standing Desk)
   const standingDesk = await db.product.create({
     data: {
-      name: 'Electric Standing Desk',
+      title: 'Electric Standing Desk',
       slug: 'electric-standing-desk',
       description: 'Height-adjustable electric standing desk with memory presets. Transform your workspace for better health and productivity.',
-      isActive: true,
+      status: 'PUBLISHED',
       categoryId: categories[1].id,
-      price: 18999.00,
+      basePrice: 18999.00,
       comparePrice: 24799.00,
       weight: 45.0,
       tags: ['standing desk', 'electric', 'adjustable', 'ergonomic', 'health'],
@@ -861,12 +861,12 @@ async function main() {
   // Create more products for better testing
   const modernSofa = await db.product.create({
     data: {
-      name: 'Modern 3-Seater Sofa',
+      title: 'Modern 3-Seater Sofa',
       slug: 'modern-3-seater-sofa',
       description: 'Luxurious 3-seater sofa with premium fabric upholstery. Perfect for modern living rooms and entertainment spaces.',
-      isActive: true,
+      status: 'PUBLISHED',
       categoryId: categories[4].id, // Sofas
-      price: 24999.00,
+      basePrice: 24999.00,
       comparePrice: 31999.00,
       weight: 85.0,
       tags: ['sofa', 'modern', 'luxury', 'living room', '3-seater'],
@@ -897,12 +897,12 @@ async function main() {
 
   const diningTable = await db.product.create({
     data: {
-      name: 'Oak Dining Table',
+      title: 'Oak Dining Table',
       slug: 'oak-dining-table',
       description: 'Solid oak dining table that seats 6 people comfortably. Handcrafted with attention to detail and built to last generations.',
-      isActive: true,
+      status: 'PUBLISHED',
       categoryId: categories[5].id, // Dining Tables
-      price: 15499.00,
+      basePrice: 15499.00,
       comparePrice: 19999.00,
       weight: 65.0,
       tags: ['dining table', 'oak', 'solid wood', 'handcrafted', '6-seater'],
@@ -933,12 +933,12 @@ async function main() {
 
   const bookshelf = await db.product.create({
     data: {
-      name: 'Industrial Bookshelf',
+      title: 'Industrial Bookshelf',
       slug: 'industrial-bookshelf',
       description: 'Industrial-style bookshelf with metal frame and wooden shelves. Perfect for displaying books, decor, and personal items.',
-      isActive: true,
+      status: 'PUBLISHED',
       categoryId: categories[3].id, // Storage
-      price: 4999.00,
+      basePrice: 4999.00,
       comparePrice: 6999.00,
       weight: 35.0,
       tags: ['bookshelf', 'industrial', 'storage', 'metal', 'wood'],

@@ -18,34 +18,35 @@ export const authOptions: NextAuthOptions = {
         password: { label: 'Password', type: 'password' }
       },
       async authorize(credentials) {
-        if (!credentials?.email) return null
-        
-        console.log('Admin authorize called with:', credentials.email)
-        
-        // For development - allow admin login with any password
-        if (credentials.email === 'admin@furniturestore.com') {
-          try {
-            const user = await db.user.findUnique({
-              where: { email: credentials.email }
-            })
-            
-            console.log('Found admin user:', user)
-            
-            if (user && user.role === 'ADMIN') {
-              return {
-                id: user.id,
-                email: user.email,
-                name: user.name,
-                role: user.role,
-              }
-            }
-          } catch (error) {
-            console.error('Database error in admin authorize:', error)
+        if (!credentials?.email || !credentials?.password) return null
+
+        try {
+          const user = await db.user.findUnique({
+            where: { email: credentials.email }
+          })
+          if (!user || user.role !== 'ADMIN') return null
+
+          // ponytail: dev-only backdoor for the seeded demo admin; disabled in prod
+          const isDevDemoAdmin =
+            process.env.NODE_ENV !== 'production' &&
+            user.email === 'admin@furniturestore.com'
+
+          if (!isDevDemoAdmin) {
+            if (!user.password) return null
+            const ok = await bcrypt.compare(credentials.password, user.password)
+            if (!ok) return null
           }
+
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            role: user.role,
+          }
+        } catch (error) {
+          console.error('Admin authorize error:', error)
+          return null
         }
-        
-        console.log('Admin authorization failed')
-        return null
       }
     }),
     // Customer credentials provider

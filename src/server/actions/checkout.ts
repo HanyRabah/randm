@@ -29,8 +29,7 @@ export async function createOrder(formData: FormData) {
       line1: formData.get('line1') as string,
       line2: formData.get('line2') as string || undefined,
       city: formData.get('city') as string,
-      region: formData.get('region') as string,
-      postalCode: formData.get('postalCode') as string || undefined,
+      state: formData.get('state') as string || formData.get('region') as string,
       country: formData.get('country') as string,
     }
 
@@ -95,8 +94,7 @@ export async function createOrder(formData: FormData) {
         line1: validatedData.line1,
         line2: validatedData.line2,
         city: validatedData.city,
-        region: validatedData.region,
-        postalCode: validatedData.postalCode,
+        state: validatedData.state,
         country: validatedData.country,
         phone: validatedData.phone,
         isDefault: false,

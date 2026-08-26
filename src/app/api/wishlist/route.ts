@@ -21,12 +21,7 @@ export async function GET(request: NextRequest) {
     })
 
     const wishlistItems = await db.wishlist.findMany({
-      where: {
-        OR: [
-          ...(user ? [{ userId: user.id }] : []),
-          { customer: { email: session.user.email } }
-        ]
-      },
+      where: user ? { userId: user.id } : { userId: null },
       include: {
         product: {
           include: {
@@ -58,9 +53,9 @@ export async function GET(request: NextRequest) {
       addedAt: item.createdAt.toISOString(),
       product: {
         id: item.product.id,
-        title: item.product.name,
+        title: item.product.title,
         slug: item.product.slug,
-        basePrice: Number(item.product.price),
+        basePrice: Number(item.product.basePrice),
         comparePrice: item.product.comparePrice ? Number(item.product.comparePrice) : null,
         category: item.product.category,
         image: item.product.media[0]?.url || '/placeholder-product.jpg',
@@ -95,69 +90,31 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { productId } = addToWishlistSchema.parse(body)
 
-    // Check if product exists
-    const product = await db.product.findUnique({
-      where: { id: productId },
-      select: { id: true, name: true, isActive: true }
-    })
+    const [product, user] = await Promise.all([
+      db.product.findUnique({
+        where: { id: productId },
+        select: { id: true, title: true, status: true },
+      }),
+      db.user.findUnique({ where: { email: session.user.email } }),
+    ])
 
-    if (!product || !product.isActive) {
+    if (!product || product.status !== 'PUBLISHED') {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 })
     }
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 })
+    }
 
-    // Get user from database first
-    const user = await db.user.findUnique({
-      where: { email: session.user.email }
+    const existing = await db.wishlist.findFirst({
+      where: { productId, userId: user.id },
     })
-
-    // Check if already in wishlist
-    const existingWishlistItem = await db.wishlist.findFirst({
-      where: {
-        productId,
-        OR: [
-          ...(user ? [{ userId: user.id }] : []),
-          { customer: { email: session.user.email } }
-        ]
-      }
-    })
-
-    if (existingWishlistItem) {
+    if (existing) {
       return NextResponse.json({ error: 'Product already in wishlist' }, { status: 409 })
     }
 
-    let wishlistItem
-    if (user) {
-      // Create wishlist item for authenticated user
-      wishlistItem = await db.wishlist.create({
-        data: {
-          userId: user.id,
-          productId
-        }
-      })
-    } else {
-      // Find or create customer for guest checkout
-      let customer = await db.customer.findUnique({
-        where: { email: session.user.email }
-      })
-
-      if (!customer) {
-        customer = await db.customer.create({
-          data: {
-            email: session.user.email,
-            firstName: session.user.name?.split(' ')[0] || '',
-            lastName: session.user.name?.split(' ').slice(1).join(' ') || ''
-          }
-        })
-      }
-
-      // Create wishlist item for customer
-      wishlistItem = await db.wishlist.create({
-        data: {
-          customerId: customer.id,
-          productId
-        }
-      })
-    }
+    const wishlistItem = await db.wishlist.create({
+      data: { userId: user.id, productId },
+    })
 
     return NextResponse.json({
       success: true,

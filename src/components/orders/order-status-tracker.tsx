@@ -28,7 +28,7 @@ interface OrderStatusTrackerProps {
     contactPhone: string
     createdAt: string
     updatedAt: string
-    shippingAddress?: {
+    address?: {
       street: string
       city: string
       governorate: string
@@ -201,7 +201,7 @@ export function OrderStatusTracker({ order }: OrderStatusTrackerProps) {
       )}
 
       {/* Delivery Address */}
-      {order.shippingAddress && (
+      {order.address && (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
@@ -211,8 +211,8 @@ export function OrderStatusTracker({ order }: OrderStatusTrackerProps) {
           </CardHeader>
           <CardContent>
             <div className="text-sm">
-              <p>{order.shippingAddress.street}</p>
-              <p>{order.shippingAddress.city}, {order.shippingAddress.governorate}</p>
+              <p>{order.address.street}</p>
+              <p>{order.address.city}, {order.address.governorate}</p>
             </div>
           </CardContent>
         </Card>

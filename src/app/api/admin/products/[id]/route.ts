@@ -16,6 +16,29 @@ const updateProductSchema = z.object({
   tags: z.array(z.string()).optional(),
   seoTitle: z.string().optional(),
   seoDescription: z.string().optional(),
+  options: z.array(z.object({
+    id: z.string(),
+    name: z.string(),
+    values: z.array(z.object({
+      id: z.string(),
+      value: z.string(),
+      hexColor: z.string().optional()
+    }))
+  })).optional(),
+  variants: z.array(z.object({
+    id: z.string(),
+    sku: z.string(),
+    price: z.number(),
+    comparePrice: z.number().optional(),
+    inventory: z.number(),
+    isDefault: z.boolean(),
+    options: z.record(z.string())
+  })).optional(),
+  images: z.array(z.object({
+    id: z.string(),
+    url: z.string(),
+    altText: z.string()
+  })).optional()
 })
 
 export async function GET(
@@ -114,23 +137,134 @@ export async function PUT(
       }
     }
 
-    // Update product
-    const updatedProduct = await db.product.update({
+    // Update product with transaction
+    const updatedProduct = await db.$transaction(async (tx) => {
+      // Update basic product info
+      const product = await tx.product.update({
+        where: { id: params.id },
+        data: {
+          title: validatedData.title,
+          slug: validatedData.slug,
+          description: validatedData.description,
+          status: validatedData.status,
+          categoryId: validatedData.categoryId,
+          basePrice: validatedData.basePrice,
+          comparePrice: validatedData.comparePrice,
+          weight: validatedData.weight,
+          tags: validatedData.tags || [],
+          seoTitle: validatedData.seoTitle,
+          seoDescription: validatedData.seoDescription,
+          updatedAt: new Date(),
+        },
+      })
+
+      // Update options if provided
+      if (validatedData.options) {
+        // Delete existing options and values
+        await tx.optionValue.deleteMany({
+          where: {
+            option: {
+              productId: params.id
+            }
+          }
+        })
+        await tx.productOption.deleteMany({
+          where: { productId: params.id }
+        })
+
+        // Create new options
+        for (const option of validatedData.options) {
+          const productOption = await tx.productOption.create({
+            data: {
+              productId: params.id,
+              name: option.name,
+              position: 0,
+            }
+          })
+
+          // Create option values
+          for (const value of option.values) {
+            await tx.optionValue.create({
+              data: {
+                optionId: productOption.id,
+                value: value.value,
+                hexColor: value.hexColor,
+                position: 0,
+              }
+            })
+          }
+        }
+      }
+
+      // Update variants if provided
+      if (validatedData.variants) {
+        // Delete existing variants
+        await tx.variant.deleteMany({
+          where: { productId: params.id }
+        })
+
+        // Create new variants
+        for (const variant of validatedData.variants) {
+          const newVariant = await tx.variant.create({
+            data: {
+              productId: params.id,
+              sku: variant.sku,
+              price: variant.price,
+              comparePrice: variant.comparePrice,
+              inventory: variant.inventory,
+              isDefault: variant.isDefault,
+            }
+          })
+
+          // Connect variant to option values
+          for (const [optionName, optionValue] of Object.entries(variant.options)) {
+            const optionValueRecord = await tx.optionValue.findFirst({
+              where: {
+                value: optionValue,
+                option: {
+                  productId: params.id,
+                  name: optionName,
+                }
+              }
+            })
+
+            if (optionValueRecord) {
+              await tx.$executeRaw`
+                INSERT INTO "_VariantOptions" ("A", "B") 
+                VALUES (${newVariant.id}, ${optionValueRecord.id})
+              `
+            }
+          }
+        }
+      }
+
+      // Update images if provided
+      if (validatedData.images) {
+        // Delete existing media
+        await tx.media.deleteMany({
+          where: { productId: params.id }
+        })
+
+        // Create new media records
+        for (let i = 0; i < validatedData.images.length; i++) {
+          const image = validatedData.images[i]
+          await tx.media.create({
+            data: {
+              productId: params.id,
+              url: image.url,
+              altText: image.altText,
+              position: i,
+            }
+          })
+        }
+      }
+
+      return product
+    })
+
+    // Fetch updated product with all relations
+    const productWithRelations = await db.product.findUnique({
       where: { id: params.id },
-      data: {
-        title: validatedData.title,
-        slug: validatedData.slug,
-        description: validatedData.description,
-        status: validatedData.status,
-        categoryId: validatedData.categoryId,
-        basePrice: validatedData.basePrice,
-        comparePrice: validatedData.comparePrice,
-        weight: validatedData.weight,
-        tags: validatedData.tags || [],
-        seoTitle: validatedData.seoTitle,
-        seoDescription: validatedData.seoDescription,
-        updatedAt: new Date(),
-      },
       include: {
         category: {
           select: {
@@ -162,7 +296,7 @@ export async function PUT(
       },
     })
 
-    return NextResponse.json(updatedProduct)
+    return NextResponse.json(productWithRelations)
   } catch (error) {
     console.error('Error updating product:', error)
     

@@ -70,6 +70,7 @@ model User {
   id        String   @id @default(cuid())
   email     String   @unique
   name      String?
+  password  String?
   role      UserRole @default(CUSTOMER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -116,19 +117,19 @@ model Category {
 
 // Product Models
 model Product {
-  id          String   @id @default(cuid())
-  name        String
-  slug        String   @unique
-  description String?  @db.Text
-  price       Decimal  @db.Decimal(10, 2)
-  comparePrice Decimal? @db.Decimal(10, 2)
+  id          String        @id @default(cuid())
+  title       String
+  slug        String        @unique
+  description String?       @db.Text
+  status      ProductStatus @default(DRAFT)
+  basePrice   Decimal       @db.Decimal(10, 2)
+  comparePrice Decimal?     @db.Decimal(10, 2)
   weight      Float?
   tags        String[]
   seoTitle    String?
   seoDescription String?
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 
   // Relations
   categoryId  String?
@@ -144,7 +145,7 @@ model Product {
 
   @@index([slug])
   @@index([categoryId])
-  @@index([isActive])
+  @@index([status])
 }
 
 model ProductOption {

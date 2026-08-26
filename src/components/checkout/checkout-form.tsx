@@ -114,11 +114,11 @@ export function CheckoutForm() {
     setSelectedAddressId(addressId)
     setValue('addressId', addressId)
     
-    const selectedAddress = addresses.find(addr => addr.id === addressId)
+    const selectedAddress = addresses.find(addr => addr.id === addressId) as any
     if (selectedAddress) {
-      setValue('line1', selectedAddress.street)
+      setValue('line1', selectedAddress.line1 ?? selectedAddress.street)
       setValue('city', selectedAddress.city)
-      setValue('region', selectedAddress.governorate)
+      setValue('region', selectedAddress.state ?? selectedAddress.governorate)
     }
   }
 

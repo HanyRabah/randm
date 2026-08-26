@@ -22,10 +22,7 @@ export async function DELETE(
     const wishlistItem = await db.wishlist.findFirst({
       where: {
         id: params.id,
-        OR: [
-          ...(user ? [{ userId: user.id }] : []),
-          { customer: { email: session.user.email } }
-        ]
+        userId: user?.id || null
       }
     })
 

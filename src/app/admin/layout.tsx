@@ -58,6 +58,20 @@ export default async function AdminLayout({
             Coupons
           </Link>
           <Link
+            href="/admin/users"
+            className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+          >
+            <Users className="h-4 w-4" />
+            Users
+          </Link>
+          <Link
+            href="/admin/support"
+            className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+          >
+            <MessageCircle className="h-4 w-4" />
+            Support
+          </Link>
+          <Link
             href="/admin/inventory"
             className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
           >
