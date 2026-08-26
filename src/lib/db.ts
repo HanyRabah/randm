@@ -1,6 +1,18 @@
 import { PrismaClient } from '@prisma/client'
-import { headers } from 'next/headers'
 import { cache } from 'react'
+
+// Lazy so this module can be imported from client-side bundles without
+// pulling in `next/headers` (which would poison the client build). The
+// resolver only runs when a query actually executes, always from server
+// code, so the dynamic import is safe.
+async function readHeaders(): Promise<Headers | null> {
+  try {
+    const mod = await import('next/headers')
+    return mod.headers()
+  } catch {
+    return null
+  }
+}
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined
@@ -33,12 +45,8 @@ function slugFromHost(host: string): string | null {
 // context (background jobs, seed scripts) — the extension then bypasses
 // scoping for that call.
 const resolveTenantIdOnce = cache(async (): Promise<string | null> => {
-  let h: ReturnType<typeof headers>
-  try {
-    h = headers()
-  } catch {
-    return null
-  }
+  const h = await readHeaders()
+  if (!h) return null
 
   const explicit = h.get('x-tenant-slug')
   const host = (h.get('x-forwarded-host') || h.get('host') || '').toLowerCase()
