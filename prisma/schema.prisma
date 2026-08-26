@@ -695,8 +695,10 @@ model Popup {
 // SEO Settings Model
 model SeoSettings {
   id                 String   @id @default(cuid())
-  siteName           String   @default("R&M Store")
-  siteDescription    String   @default("Premium furniture and home decor with Cash on Delivery")
+  siteName           String   @default("My Store")
+  siteDescription    String   @default("")
+  primaryColor       String   @default("#111827") // slate-900
+  accentColor        String   @default("#4f46e5") // indigo-600
   siteKeywords       String[] @default(["furniture", "home decor", "cash on delivery", "Egypt"])
   siteUrl            String   @default("https://rmstore.com")
   logoUrl            String?

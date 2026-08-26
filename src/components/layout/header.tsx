@@ -14,6 +14,11 @@ export async function Header() {
   const seoSettings = await getSeoSettings()
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div
+        aria-hidden
+        className="h-[3px] w-full"
+        style={{ backgroundColor: 'var(--tenant-accent, #4f46e5)' }}
+      />
       <div className="container flex h-16 items-center">
         {/* Mobile menu button */}
         <Button variant="ghost" size="icon" className="md:hidden">

@@ -33,6 +33,8 @@ interface SeoSettings {
   language: string
   country: string
   timezone: string
+  primaryColor?: string
+  accentColor?: string
   createdAt: string
   updatedAt: string
 }
@@ -361,6 +363,57 @@ export default function SeoSettingsPage() {
                 onChange={(e) => updateField('linkedinUrl', e.target.value)}
                 placeholder="https://linkedin.com/company/yourcompany"
               />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Theme */}
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Palette className="h-5 w-5" />
+              Theme
+            </CardTitle>
+            <CardDescription>
+              Brand colors used across your storefront. Header accent stripe uses the accent color.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="grid gap-4 md:grid-cols-2">
+            <div className="space-y-2">
+              <Label htmlFor="primaryColor">Primary color</Label>
+              <div className="flex items-center gap-3">
+                <Input
+                  id="primaryColor"
+                  type="color"
+                  className="w-16 h-10 p-1 cursor-pointer"
+                  value={settings.primaryColor || '#111827'}
+                  onChange={(e) => updateField('primaryColor', e.target.value)}
+                />
+                <Input
+                  value={settings.primaryColor || '#111827'}
+                  onChange={(e) => updateField('primaryColor', e.target.value)}
+                  placeholder="#111827"
+                  className="font-mono"
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="accentColor">Accent color</Label>
+              <div className="flex items-center gap-3">
+                <Input
+                  id="accentColor"
+                  type="color"
+                  className="w-16 h-10 p-1 cursor-pointer"
+                  value={settings.accentColor || '#4f46e5'}
+                  onChange={(e) => updateField('accentColor', e.target.value)}
+                />
+                <Input
+                  value={settings.accentColor || '#4f46e5'}
+                  onChange={(e) => updateField('accentColor', e.target.value)}
+                  placeholder="#4f46e5"
+                  className="font-mono"
+                />
+              </div>
             </div>
           </CardContent>
         </Card>

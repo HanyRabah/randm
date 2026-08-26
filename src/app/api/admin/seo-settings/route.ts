@@ -26,6 +26,8 @@ const seoSettingsSchema = z.object({
   language: z.string().default('ar'),
   country: z.string().default('Egypt'),
   timezone: z.string().default('Africa/Cairo'),
+  primaryColor: z.string().regex(/^#[0-9a-f]{6}$/i, 'Use hex like #111827').optional(),
+  accentColor: z.string().regex(/^#[0-9a-f]{6}$/i, 'Use hex like #4f46e5').optional(),
 })
 
 // GET /api/admin/seo-settings - Get SEO settings

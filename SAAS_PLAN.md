@@ -73,7 +73,9 @@ Nothing multi-tenant exists today. This is the ordered path:
 
 ### 2.5 Per-tenant storage & theme
 - S3 key prefix `tenants/<id>/…`.
-- Move `SeoSettings` fields (brand name, currency, locale, timezone, logo, primary color) to `Tenant` so every store rebrands trivially.
+- ✅ SeoSettings already tenant-scoped by the Prisma extension. Added `primaryColor` + `accentColor` fields; admin has a Theme card with color pickers; `(site)/layout.tsx` injects them as `--tenant-primary` / `--tenant-accent` CSS vars; header carries an accent stripe as visible proof.
+- ✅ Killed the module-level 5-minute cache in `src/lib/seo.ts` — it was leaking one tenant's SeoSettings to every other tenant on the same warm serverless instance. Now uses React's per-request `cache()`.
+- Not yet moved to Tenant model: brand fields still live on SeoSettings (one-per-tenant unique). Consolidating onto Tenant would flatten the model but requires another migration; deferred.
 
 ### 2.6 Custom domains
 - ✅ `src/lib/vercel-domains.ts` — thin wrapper over the Vercel Project Domains API (`add`, `get`, `remove`).
