@@ -44,9 +44,18 @@ function slugFromHost(host: string): string | null {
 // Resolved once per React request. Returns null when there is no request
 // context (background jobs, seed scripts) — the extension then bypasses
 // scoping for that call.
-const resolveTenantIdOnce = cache(async (): Promise<string | null> => {
+async function getDefaultTenantId(): Promise<string> {
+  const def = await base.tenant.findUnique({ where: { slug: DEFAULT_TENANT_SLUG } })
+  if (def) return def.id
+  const created = await base.tenant.create({
+    data: { slug: DEFAULT_TENANT_SLUG, name: 'Default Store' },
+  })
+  return created.id
+}
+
+const resolveTenantIdOnce = cache(async (): Promise<string> => {
   const h = await readHeaders()
-  if (!h) return null
+  if (!h) return getDefaultTenantId()
 
   const explicit = h.get('x-tenant-slug')
   const host = (h.get('x-forwarded-host') || h.get('host') || '').toLowerCase()
@@ -73,12 +82,7 @@ const resolveTenantIdOnce = cache(async (): Promise<string | null> => {
   // Single-tenant fallback: auto-provision the default tenant.
   // ponytail: remove this once signup provisions real tenants and legacy
   // rows have been backfilled.
-  const def = await base.tenant.findUnique({ where: { slug: DEFAULT_TENANT_SLUG } })
-  if (def) return def.id
-  const created = await base.tenant.create({
-    data: { slug: DEFAULT_TENANT_SLUG, name: 'Default Store' },
-  })
-  return created.id
+  return getDefaultTenantId()
 })
 
 // Models that carry a tenantId. Child models (Variant, OrderItem, Media,
@@ -109,7 +113,6 @@ export const db = base.$extends({
       async $allOperations({ model, operation, args, query }: any) {
         if (!TENANT_MODELS.has(model)) return query(args)
         const tenantId = await resolveTenantIdOnce()
-        if (!tenantId) return query(args)
 
         switch (operation) {
           case 'findMany':
