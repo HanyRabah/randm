@@ -62,10 +62,10 @@ export async function GET(request: NextRequest) {
     memoryCache.set(cacheKey, result, 60) // Cache for 1 minute
 
     return cachedResponse(result, 'products')
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching products:', error)
     return NextResponse.json(
-      { error: 'Failed to fetch products' },
+      { error: 'Failed to fetch products', detail: `${error?.code ?? ''} ${error?.message ?? String(error)}`.slice(0, 500) },
       { status: 500 }
     )
   }
