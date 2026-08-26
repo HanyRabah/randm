@@ -46,6 +46,22 @@ async function main() {
     console.log(`  ${table.padEnd(24)} → ${result} rows`)
   }
 
+  // Enroll every existing ADMIN user as an OWNER of the default tenant.
+  // Prevents the admin membership check from locking out the seeded admin
+  // after this deploy. Idempotent thanks to the (tenantId, userId) unique.
+  const admins = await base.user.findMany({
+    where: { role: 'ADMIN' },
+    select: { id: true, email: true },
+  })
+  for (const a of admins) {
+    await base.tenantMember.upsert({
+      where: { tenantId_userId: { tenantId: tenant.id, userId: a.id } },
+      create: { tenantId: tenant.id, userId: a.id, role: 'OWNER' },
+      update: {},
+    })
+    console.log(`  member OWNER for ${a.email}`)
+  }
+
   console.log('Done.')
 }
 

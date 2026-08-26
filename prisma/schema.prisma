@@ -168,7 +168,7 @@ model VerificationToken {
 model Category {
   id          String   @id @default(cuid())
   name        String
-  slug        String   @unique
+  slug        String
   description String?
   image       String?
   parentId    String?
@@ -181,9 +181,10 @@ model Category {
   children Category[] @relation("CategoryHierarchy")
   products Product[]
 
-  tenantId String?
-  tenant   Tenant? @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
+  @@unique([tenantId, slug])
   @@index([tenantId])
 }
 
@@ -191,7 +192,7 @@ model Category {
 model Product {
   id             String        @id @default(cuid())
   title          String
-  slug           String        @unique
+  slug           String
   description    String?       @db.Text
   status         ProductStatus @default(DRAFT)
   basePrice      Decimal       @db.Decimal(10, 2)
@@ -215,9 +216,10 @@ model Product {
   reviews         Review[]
   inventoryAlerts InventoryAlert[]
 
-  tenantId String?
-  tenant   Tenant? @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
+  @@unique([tenantId, slug])
   @@index([slug])
   @@index([categoryId])
   @@index([status])
@@ -285,7 +287,7 @@ model Media {
 // Coupon Model
 model Coupon {
   id             String     @id @default(cuid())
-  code           String     @unique
+  code           String
   type           CouponType
   value          Decimal    @db.Decimal(10, 2) // Percentage or fixed amount
   minSubtotal    Decimal?   @db.Decimal(10, 2)
@@ -300,9 +302,10 @@ model Coupon {
 
   orders Order[]
 
-  tenantId String?
-  tenant   Tenant? @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
+  @@unique([tenantId, code])
   @@index([tenantId])
 }
 
@@ -317,8 +320,8 @@ model Cart {
   user  User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
   items CartItem[]
 
-  tenantId String?
-  tenant   Tenant? @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@index([tenantId])
 }
@@ -342,7 +345,7 @@ model CartItem {
 // Customer Model
 model Customer {
   id          String   @id @default(cuid())
-  email       String   @unique
+  email       String
   phone       String?
   firstName   String?
   lastName    String?
@@ -358,9 +361,10 @@ model Customer {
   reviewVotes    ReviewVote[]
   supportTickets SupportTicket[]
 
-  tenantId String?
-  tenant   Tenant? @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
+  @@unique([tenantId, email])
   @@index([tenantId])
 }
 
@@ -421,8 +425,8 @@ model Order {
   items    OrderItem[]
   reviews  Review[]
 
-  tenantId String?
-  tenant   Tenant? @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@index([tenantId])
 }
@@ -454,8 +458,8 @@ model Wishlist {
   customer Customer? @relation(fields: [customerId], references: [id], onDelete: Cascade)
   product  Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
 
-  tenantId String?
-  tenant   Tenant? @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@unique([userId, productId])
   @@unique([customerId, productId])
@@ -485,8 +489,8 @@ model Review {
   media    ReviewMedia[]
   votes    ReviewVote[]
 
-  tenantId String?
-  tenant   Tenant? @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@unique([productId, userId])
   @@unique([productId, customerId])
@@ -524,7 +528,7 @@ model ReviewVote {
 // Newsletter Subscription Model
 model NewsletterSubscriber {
   id               String    @id @default(cuid())
-  email            String    @unique
+  email            String
   firstName        String?
   lastName         String?
   isActive         Boolean   @default(true)
@@ -535,9 +539,10 @@ model NewsletterSubscriber {
   unsubscribedAt   DateTime?
   lastEmailSent    DateTime?
 
-  tenantId String?
-  tenant   Tenant? @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
+  @@unique([tenantId, email])
   @@index([email])
   @@index([isActive])
   @@index([tenantId])
@@ -562,8 +567,8 @@ model NewsletterCampaign {
   userId String?
   user   User?   @relation(fields: [userId], references: [id])
 
-  tenantId String?
-  tenant   Tenant? @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@index([tenantId])
 }
@@ -584,8 +589,8 @@ model InventoryAlert {
   product Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
   variant Variant? @relation(fields: [variantId], references: [id], onDelete: Cascade)
 
-  tenantId String?
-  tenant   Tenant? @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   // Either product or variant must be set, but not both
   @@index([productId])
@@ -627,8 +632,8 @@ model SupportTicket {
   assignedTo User?            @relation("TicketAssignment", fields: [assignedToId], references: [id])
   messages   SupportMessage[]
 
-  tenantId String?
-  tenant   Tenant? @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@index([status])
   @@index([priority])
@@ -680,8 +685,8 @@ model Popup {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  tenantId String?
-  tenant   Tenant? @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@index([tenantId])
 }
@@ -712,6 +717,6 @@ model SeoSettings {
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
 
-  tenantId String? @unique
-  tenant   Tenant? @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenantId String @unique
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 }

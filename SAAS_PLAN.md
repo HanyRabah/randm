@@ -43,7 +43,10 @@ Nothing multi-tenant exists today. This is the ordered path:
 - ✅ Nullable `tenantId` added to root business models: `Category`, `Product`, `Cart`, `Order`, `Coupon`, `Popup`, `NewsletterSubscriber`, `NewsletterCampaign`, `Review`, `Wishlist`, `Customer`, `SupportTicket`, `InventoryAlert`, `SeoSettings` (unique).
 - ✅ Prisma client extension in `src/lib/db.ts` auto-scopes every query on tenant models — no route-by-route wiring needed. `findMany/findFirst/count/aggregate/groupBy/updateMany/deleteMany` inject `where.tenantId`; `create/createMany/upsert.create` inject `data.tenantId`. `findUnique/update/delete` on `id` stay unscoped (ids are globally unique cuids).
 - ✅ `scripts/backfill-tenant.ts` (via `pnpm backfill:tenant`) assigns the default tenant to legacy `null` rows. Idempotent.
-- Next: after backfill runs on staging + prod, flip `tenantId` to NOT NULL and swap single-column `@unique` (Product.slug, Coupon.code, Customer.email, NewsletterSubscriber.email) to composite `(tenantId, x)` so a real second tenant can't hit slug collisions.
+- ✅ `tenantId` flipped to NOT NULL on all 14 business models; composite `@@unique([tenantId, slug/code/email])` on Category, Product, Coupon, Customer, NewsletterSubscriber.
+- ✅ Admin layout now checks TenantMember before rendering — a signed-in ADMIN who is not a member of the resolved tenant gets bounced to `/onboarding?error=no-access`.
+- ✅ Backfill script auto-enrols every legacy ADMIN as OWNER of the default tenant (idempotent) so the seeded admin isn't locked out.
+- Next: real Host-based routing (`<slug>.storely.app` → resolve without cookie/query bridge).
 
 ### 2.2 Tenant resolution
 - Add [src/middleware.ts](src/middleware.ts) that reads `Host` header:

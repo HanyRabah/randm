@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import Link from 'next/link'
 import { Home, ShoppingCart, Package, Percent, Settings, Users, Activity, AlertTriangle, Mail, MessageCircle } from 'lucide-react'
+import { getTenant } from '@/lib/tenant'
+import { db } from '@/lib/db'
 
 export default async function AdminLayout({
   children,
@@ -10,9 +12,22 @@ export default async function AdminLayout({
   children: React.ReactNode
 }) {
   const session = await getServerSession(authOptions)
-  
+
   if (!session?.user || (session.user as any).role !== 'ADMIN') {
     redirect('/api/auth/signin')
+  }
+
+  // Verify the signed-in ADMIN actually belongs to the current tenant.
+  // Prevents a hostile merchant from swapping the storely_tenant cookie
+  // to another slug and viewing that tenant's admin.
+  const tenant = await getTenant()
+  const userId = (session.user as any).id as string | undefined
+  if (tenant && userId) {
+    const member = await db.tenantMember.findUnique({
+      where: { tenantId_userId: { tenantId: tenant.id, userId } },
+      select: { id: true },
+    })
+    if (!member) redirect('/onboarding?error=no-access')
   }
 
   return (
