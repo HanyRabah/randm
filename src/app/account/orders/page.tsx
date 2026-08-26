@@ -1,10 +1,11 @@
 'use client'
+export const dynamic = 'force-dynamic'
 
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { 
@@ -19,10 +20,13 @@ import {
   Calendar,
   CreditCard,
   MapPin,
-  ExternalLink
+  ExternalLink,
+  ArrowLeft,
+  XCircle
 } from 'lucide-react'
 import Link from 'next/link'
 import { formatPrice } from '@/lib/utils/price'
+import { useRouter } from 'next/navigation'
 
 interface OrderItem {
   id: string
@@ -40,7 +44,7 @@ interface Order {
   total: number
   shippingCost: number
   paymentMethod: string
-  shippingAddress: {
+  address: {
     street: string
     city: string
     governorate: string
@@ -214,7 +218,7 @@ export default function OrdersPage() {
                         </span>
                         <span className="flex items-center gap-1">
                           <MapPin className="h-4 w-4" />
-                          {order.shippingAddress.city}, {order.shippingAddress.governorate}
+                          {order.address.city}, {order.address.governorate}
                         </span>
                       </CardDescription>
                     </div>
@@ -259,8 +263,8 @@ export default function OrdersPage() {
                       <div>
                         <h4 className="font-medium mb-2">Shipping Address</h4>
                         <p className="text-sm text-gray-600">
-                          {order.shippingAddress.street}<br />
-                          {order.shippingAddress.city}, {order.shippingAddress.governorate}
+                          {order.address.street}<br />
+                          {order.address.city}, {order.address.governorate}
                         </p>
                       </div>
                       <div>
