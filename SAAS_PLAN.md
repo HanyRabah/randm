@@ -63,7 +63,7 @@ Nothing multi-tenant exists today. This is the ordered path:
 - ✅ `signup()` server action — transactionally creates User(role=ADMIN) + Tenant(TRIAL, +14d) + TenantMember(OWNER) + SeoSettings row.
 - ✅ Auto sign-in on submit; `/onboarding` welcome page with next-step checklist.
 - ✅ `middleware.ts` bridges `?tenant=<slug>` and `storely_tenant` cookie into the `x-tenant-slug` header so the Prisma extension resolves the new merchant's data even without real Host routing yet.
-- Skipped: seeding sample categories/products from a template (add when merchants ask for it).
+- ✅ Signup transaction now seeds a sample Category + Product + Variant + Media so the new merchant lands on a populated storefront and admin, not empty state.
 
 ### 2.4 Billing
 - Stripe Billing. Plans: Free (trial), Starter, Pro, Scale.

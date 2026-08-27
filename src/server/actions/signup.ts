@@ -72,6 +72,51 @@ export async function signup(input: SignupInput): Promise<SignupResult> {
       await tx.seoSettings.create({
         data: { tenantId: tenant.id, siteName: data.storeName },
       })
+
+      // Sample catalog so the new merchant sees the storefront + admin
+      // populated instead of empty state. Merchants delete/replace these
+      // as they add their own products.
+      const category = await tx.category.create({
+        data: {
+          tenantId: tenant.id,
+          name: 'Sample Category',
+          slug: 'sample-category',
+          description: 'Delete this and add your own categories from the admin.',
+          isActive: true,
+          sortOrder: 1,
+        },
+      })
+      const product = await tx.product.create({
+        data: {
+          tenantId: tenant.id,
+          title: 'Sample Product',
+          slug: 'sample-product',
+          description:
+            'This is a placeholder product so you can see how your storefront looks. Replace it with your own from the admin.',
+          status: 'PUBLISHED',
+          basePrice: 49.0 as any,
+          comparePrice: 79.0 as any,
+          categoryId: category.id,
+          tags: ['sample'],
+        },
+      })
+      await tx.variant.create({
+        data: {
+          productId: product.id,
+          sku: `${slug}-sample-default`,
+          price: 49.0 as any,
+          inventory: 10,
+          isDefault: true,
+        },
+      })
+      await tx.media.create({
+        data: {
+          productId: product.id,
+          url: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800',
+          altText: 'Sample product',
+          position: 0,
+        },
+      })
     })
   } catch (err: any) {
     console.error('[signup] error', err)
